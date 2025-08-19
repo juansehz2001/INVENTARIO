@@ -83,12 +83,7 @@ def home():
 
 
 # ----------------- INVENTARIO ARTÍCULOS -------------------
-@app.route("/inventarioarticulo")
-def inventario_articulos():
-    if not is_logged_in():
-        flash("Sesión expirada. Vuelve a iniciar sesión ", "warning")
-        return redirect(url_for("login"))
-    return render_template("inventarioarticulo.html")
+
 
 
 # ----------------- INVENTARIO EQUIPOS -------------------
@@ -124,6 +119,8 @@ def is_logged_in():
     # refrescar actividad
     session["last_activity"] = now
     return True
+from inv import inv_bp
+app.register_blueprint(inv_bp)
 
 
 if __name__ == "__main__":
