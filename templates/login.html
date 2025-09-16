@@ -81,9 +81,11 @@
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    
   </style>
 </head>
 <body>
+  
   <!-- Fondo de partículas -->
   <div id="particles-js"></div>
 
@@ -102,12 +104,85 @@
           <input type="password" name="password" id="password" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-neon w-100">Ingresar</button>
+        <button type="button" id="btnHuella" class="btn btn-outline-info w-100">
+  <i class="bi bi-fingerprint"></i> Ingresar con Huella
+        </button>
+        <div id="msgHuella" class="text-center mt-3 fw-bold"></div>
       </form>
     </div>
   </div>
 
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
+<script>
+function base64urlToBuffer(base64url) {
+    const base64 = base64url.replace(/-/g, "+").replace(/_/g, "/") + 
+                   "==".slice(0, (4 - base64url.length % 4) % 4);
+    const str = atob(base64);
+    return Uint8Array.from(str, c => c.charCodeAt(0));
+}
+
+document.getElementById("btnHuella").addEventListener("click", async () => {
+    const username = document.getElementById("username").value;
+    if (!username) {
+        alert("Ingresa tu usuario antes de usar la huella");
+        return;
+    }
+
+    try {
+        // 1️⃣ Pedir challenge y credential_id
+        const challengeResp = await fetch("/huella/generate_challenge", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username })
+        });
+        const challengeData = await challengeResp.json();
+        if (!challengeResp.ok) throw new Error(challengeData.error);
+
+        const challengeBuffer = base64urlToBuffer(challengeData.challenge);
+        const credentialIdBuffer = base64urlToBuffer(challengeData.credential_id);
+
+        // 2️⃣ Opciones para navigator.credentials.get
+        const publicKey = {
+            challenge: challengeBuffer,
+            allowCredentials: [{
+                id: credentialIdBuffer,
+                type: "public-key"
+            }],
+            timeout: 60000,
+            userVerification: "required"
+        };
+
+        // 3️⃣ Obtener credenciales
+        const assertion = await navigator.credentials.get({ publicKey });
+
+        // 4️⃣ Enviar datos al backend
+        const authData = btoa(String.fromCharCode(...new Uint8Array(assertion.response.authenticatorData)));
+        const clientData = btoa(String.fromCharCode(...new Uint8Array(assertion.response.clientDataJSON)));
+        const signature = btoa(String.fromCharCode(...new Uint8Array(assertion.response.signature)));
+
+        const verifyResp = await fetch("/huella/login_verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, auth_data: authData, client_data: clientData, signature })
+        });
+        const verifyData = await verifyResp.json();
+
+        if (verifyResp.ok && verifyData.success) {
+            window.location.href = "/home";
+        } else {
+            alert(verifyData.error || "Error al iniciar sesión con huella");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Error: " + err.message);
+    }
+});
+</script>
+
 
   <!-- Particles.js -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
@@ -130,5 +205,7 @@
       }
     });
   </script>
+  
 </body>
+
 </html>
