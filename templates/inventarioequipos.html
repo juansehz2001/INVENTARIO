@@ -8,6 +8,7 @@
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
 
   <style>
@@ -111,11 +112,12 @@
       }
     }
   </style>
+
+
 </head>
 <body>
   <!-- Botón hamburguesa -->
   <button id="menuBtn">☰</button>
-
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <a href="#" class="active" onclick="mostrarSeccion('equipo', this)">Equipo</a>
@@ -134,10 +136,8 @@
     <a href="#" onclick="mostrarSeccion('usuarios', this)">Usuarios</a>
     <a href="#" onclick="mostrarSeccion('usuariodominio', this)">Usuario Dominio</a>
   </div>
-
   <!-- Overlay -->
   <div id="overlay"></div>
-
   <!-- Contenido -->
   <div class="content container-fluid">
     <h1 class="text-center mb-4">Inventario de Equipos</h1>
@@ -153,8 +153,11 @@
     </div>
   {% endif %}
 {% endwith %}
-
     <p>Bienvenido, <strong>{{ usuario }}</strong> — Rol: <strong>{{ rol }}</strong></p>
+
+
+
+
 
     <!-- Secciones -->
     <div id="equipo" class="seccion card-custom">
@@ -162,11 +165,14 @@
       <p>Hola, ingresaste a <strong>Equipo</strong>.</p>
     </div>
 
+
+
+
+
 <div id="almacenamiento" class="seccion card-custom d-none">
   <h3 class="mb-4 text-center fw-bold">
   <i class="bi bi-device-hdd-fill"></i> Almacenamiento
 </h3>
-
   <!-- Botones superiores -->
   <div class="d-flex flex-wrap gap-2 mb-3">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaCarac">
@@ -179,10 +185,9 @@
       📉 Ver Bajas
     </button>
   </div>
-
   <!-- Tabla principal -->
   <div class="table-responsive">
-    <table class="table table-striped table-hover align-middle shadow-sm">
+    <table id="tablaAlmacenamiento" class="table table-striped table-hover align-middle shadow-sm">
       <thead class="table-dark">
         <tr>
           <th>ID</th>
@@ -216,13 +221,11 @@
           <td>{{ r[6] }}</td>
           <td>{{ r[7] }}</td>
           <td>{{ r[8] }}</td>
-          <td class="d-flex gap-1">
-            
+          <td class="d-flex gap-1">           
             <!-- Botón Baja -->
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBaja{{ r[0] }}">
               ❌
             </button>
-
             <!-- Modal Baja -->
             <div class="modal fade" id="modalBaja{{ r[0] }}" tabindex="-1">
               <div class="modal-dialog">
@@ -246,12 +249,10 @@
                 </div>
               </div>
             </div>
-
             <!-- Botón Actualizar -->
             <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalActualizar{{ r[0] }}">
               ✏️
             </button>
-
             <!-- Modal Actualizar -->
             <div class="modal fade" id="modalActualizar{{ r[0] }}" tabindex="-1">
               <div class="modal-dialog">
@@ -270,7 +271,6 @@
                           </option>
                         {% endfor %}
                       </select>
-
                       <label class="form-label">Marca:</label>
                       <input type="text" name="marca" value="{{ r[3] }}" class="form-control mb-2">
 
@@ -292,19 +292,17 @@
                 </div>
               </div>
             </div>
-
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-
   <!-- Tabla de bajas -->
   <div class="collapse mt-4" id="bajasTable">
     <h4 class="fw-bold">📉 Registros en Baja</h4>
     <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
+      <table id="tablaBajas" class="table table-bordered table-hover align-middle">
         <thead class="table-secondary">
           <tr>
             <th>ID</th>
@@ -361,7 +359,6 @@
     </div>
   </div>
 </div>
-
 <!-- Modal Nuevo Almacenamiento -->
 <div class="modal fade" id="modalNuevoAlm" tabindex="-1">
   <div class="modal-dialog">
@@ -372,23 +369,18 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-
           <label class="form-label">Característica:</label>
           <select name="id_carac" class="form-select mb-3" required>
             {% for c in caracteristicas %}
               <option value="{{ c[0] }}">{{ c[1] }} GB - {{ c[2] }}</option>
             {% endfor %}
           </select>
-
           <!-- ID Equipo oculto (null) -->
           <input type="hidden" name="id_equipo" value="">
-
           <label class="form-label">Marca:</label>
           <input type="text" name="marca" class="form-control mb-3" required>
-
           <label class="form-label">Horas Uso:</label>
           <input type="number" name="horas_uso" class="form-control mb-3">
-
           <label class="form-label">Estado:</label>
           <select name="estado" class="form-select mb-3" required>
             <option value="Bueno">Bueno</option>
@@ -404,10 +396,214 @@
     </div>
   </div>
 </div>
+
+
     <div id="ubicacion" class="seccion card-custom d-none">
-      <h3>Ubicación</h3>
-      <p>Hola, ingresaste a <strong>Ubicación</strong>.</p>
+  <h3>Ubicación</h3>
+  <!-- Botones superiores -->
+  <div class="mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoPiso">➕ Nuevo Piso</button>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevaSede">➕ Nueva Sede</button>
+    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalNuevaOficina">➕ Nueva Oficina</button>
+  </div>
+  <!-- Tabla principal: Equipos con ubicación -->
+  <div class="card mb-4">
+    <div class="card-header">Equipos y Ubicaciones</div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="ubiyequi" class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Equipo</th>
+              <th>Sede</th>
+              <th>Piso</th>
+              <th>Oficina</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in ubicaciones %}
+            <tr>
+              <td>{{ u[0] }}</td>
+              <td>{{ u[1] }}</td>
+              <td>{{ u[2] or '-' }}</td>
+              <td>{{ u[3] or '-' }}</td>
+              <td>{{ u[4] or '-' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
+  <!-- Listas de Pisos / Sedes / Oficinas -->
+  <div class="row">
+    <!-- Pisos -->
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header">Pisos</div>
+        <div class="card-body">
+          <table id="upiso" class="table table-sm">
+            <thead><tr><th>ID</th><th>Nombre</th><th>Acciones</th></tr></thead>
+            <tbody>
+              {% for p in pisos %}
+              <tr>
+                <td>{{ p[0] }}</td>
+                <td>{{ p[1] }}</td>
+                <td>
+                  <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarPiso{{p[0]}}">✏️</button>
+                  <form action="{{ url_for('invequip.eliminar_piso', id=p[0]) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                  </form>
+                </td>
+              </tr>
+              <!-- Modal editar piso -->
+              <div class="modal fade" id="modalEditarPiso{{p[0]}}" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form action="{{ url_for('invequip.actualizar_piso', id=p[0]) }}" method="post">
+                      <div class="modal-header"><h5 class="modal-title">Editar Piso</h5></div>
+                      <div class="modal-body">
+                        <input type="text" name="nombre" class="form-control" value="{{ p[1] }}" required>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Sedes -->
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header">Sedes</div>
+        <div class="card-body">
+          <table id="usede" class="table table-sm">
+            <thead><tr><th>ID</th><th>Nombre</th><th>Acciones</th></tr></thead>
+            <tbody>
+              {% for s in sedes %}
+              <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>
+                  <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarSede{{s[0]}}">✏️</button>
+                  <form action="{{ url_for('invequip.eliminar_sede', id=s[0]) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                  </form>
+                </td>
+              </tr>
+              <!-- Modal editar sede -->
+              <div class="modal fade" id="modalEditarSede{{s[0]}}" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form action="{{ url_for('invequip.actualizar_sede', id=s[0]) }}" method="post">
+                      <div class="modal-header"><h5 class="modal-title">Editar Sede</h5></div>
+                      <div class="modal-body">
+                        <input type="text" name="nombre" class="form-control" value="{{ s[1] }}" required>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Oficinas -->
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header">Oficinas</div>
+        <div class="card-body">
+          <table id="uoficina" class="table table-sm">
+            <thead><tr><th>ID</th><th>Nombre</th><th>Acciones</th></tr></thead>
+            <tbody>
+              {% for o in oficinas %}
+              <tr>
+                <td>{{ o[0] }}</td>
+                <td>{{ o[1] }}</td>
+                <td>
+                  <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarOficina{{o[0]}}">✏️</button>
+                  <form action="{{ url_for('invequip.eliminar_oficina', id=o[0]) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                  </form>
+                </td>
+              </tr>
+              <!-- Modal editar oficina -->
+              <div class="modal fade" id="modalEditarOficina{{o[0]}}" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form action="{{ url_for('invequip.actualizar_oficina', id=o[0]) }}" method="post">
+                      <div class="modal-header"><h5 class="modal-title">Editar Oficina</h5></div>
+                      <div class="modal-body">
+                        <input type="text" name="nombre" class="form-control" value="{{ o[1] }}" required>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modales de creación -->
+<div class="modal fade" id="modalNuevoPiso" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('invequip.nuevo_piso') }}" method="post">
+        <div class="modal-header"><h5 class="modal-title">Nuevo Piso</h5></div>
+        <div class="modal-body"><input type="text" name="nombre" class="form-control" placeholder="Nombre del piso" required></div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalNuevaSede" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('invequip.nueva_sede') }}" method="post">
+        <div class="modal-header"><h5 class="modal-title">Nueva Sede</h5></div>
+        <div class="modal-body"><input type="text" name="nombre" class="form-control" placeholder="Nombre de la sede" required></div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-success">Guardar</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalNuevaOficina" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('invequip.nueva_oficina') }}" method="post">
+        <div class="modal-header"><h5 class="modal-title">Nueva Oficina</h5></div>
+        <div class="modal-body"><input type="text" name="nombre" class="form-control" placeholder="Nombre de la oficina" required></div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-info">Guardar</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
 
     <div id="board" class="seccion card-custom d-none">
       <h3>Board</h3>
@@ -459,18 +655,519 @@
       <p>Hola, ingresaste a <strong>Técnicos</strong>.</p>
     </div>
 
-    <div id="usuarios" class="seccion card-custom d-none">
-      <h3>Usuarios</h3>
-      <p>Hola, ingresaste a <strong>Usuarios</strong>.</p>
-    </div>
 
-    <div id="usuariodominio" class="seccion card-custom d-none">
+
+
+<div id="usuarios" class="seccion card-custom d-none"> 
+  <h3 class="mb-3">Usuarios</h3>
+  <!-- Botones superiores -->
+   <div class="mb-3">
+    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarUsuario">
+      ➕ Agregar Usuario
+    </button>   
+    <!-- ✅ Modal Agregar Usuario -->
+    <div class="modal fade" id="modalAgregarUsuario" tabindex="-1">
+      <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('invequip.crear_usuario') }}">
+          <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+              <h5 class="modal-title">Agregar Usuario</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">CC</label>
+                <input type="text" class="form-control" name="cc" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="nombre" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Área</label>
+                <select class="form-select" name="idarea" required>
+                  <option value="">Seleccione área</option>
+                  {% for a in areas %}
+                    <option value="{{ a[0] }}">{{ a[1] }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Cargo</label>
+                <select class="form-select" name="idcargo" required>
+                  <option value="">Seleccione cargo</option>
+                  {% for c in cargos %}
+                    <option value="{{ c[0] }}">{{ c[1] }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  <div class="mb-3">
+    <button class="btn btn-primary btn" data-bs-toggle="modal" data-bs-target="#modalArea">Área</button>
+    <!-- Modal Área -->
+<div class="modal fade" id="modalArea" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Gestión de Áreas</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form crear área -->
+        <form method="POST" action="{{ url_for('invequip.crear_area') }}" class="mb-3">
+          <div class="input-group">
+            <input type="text" class="form-control" name="area" placeholder="Nueva área" required>
+            <button type="submit" class="btn btn-success">Agregar</button>
+          </div>
+        </form>
+        <!-- Tabla áreas -->
+        <table id="usarea" class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Área</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in areas %}
+            <tr>
+              <td>{{ a[0] }}</td>
+              <td>{{ a[1] }}</td>
+              <td>
+                <!-- Botón editar -->
+                <button class="btn btn-warning btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalEditarArea"
+                        data-id="{{ a[0] }}" 
+                        data-area="{{ a[1] }}">
+                  Editar
+                </button>
+                <!-- Botón eliminar -->
+                <form method="POST" action="{{ url_for('invequip.eliminar_area', id=a[0]) }}" class="d-inline">
+                  <button type="submit" class="btn btn-danger btn-sm"
+                          onclick="return confirm('¿Eliminar área?')">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Editar Área -->
+<div class="modal fade" id="modalEditarArea" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" id="formEditarArea">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title">Editar Área</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editAreaId">
+          <div class="mb-3">
+            <label class="form-label">Área</label>
+            <input type="text" class="form-control" name="area" id="editAreaNombre" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCargo">Cargo</button>
+    <!-- Modal Cargo -->
+<div class="modal fade" id="modalCargo" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary text-white">
+        <h5 class="modal-title">Gestión de Cargos</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form crear cargo -->
+        <form method="POST" action="{{ url_for('invequip.crear_cargo') }}" class="mb-3">
+          <div class="input-group">
+            <input type="text" class="form-control" name="descripcion" placeholder="Nuevo cargo" required>
+            <button type="submit" class="btn btn-success">Agregar</button>
+          </div>
+        </form>
+        <!-- Tabla cargos -->
+        <table id="uscargo" class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in cargos %}
+            <tr>
+              <td>{{ c[0] }}</td>
+              <td>{{ c[1] }}</td>
+              <td>
+                <!-- Botón editar -->
+                <button class="btn btn-warning btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditarCargo"
+                        data-id="{{ c[0] }}"
+                        data-descripcion="{{ c[1] }}">
+                  Editar
+                </button>
+                <!-- Botón eliminar -->
+                <form method="POST" action="{{ url_for('invequip.eliminar_cargo', id=c[0]) }}" class="d-inline">
+                  <button type="submit" class="btn btn-danger btn-sm"
+                          onclick="return confirm('¿Eliminar cargo?')">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Editar Cargo -->
+<div class="modal fade" id="modalEditarCargo" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" id="formEditarCargo">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title">Editar Cargo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editCargoId">
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <input type="text" class="form-control" name="descripcion" id="editCargoDescripcion" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalTelefono">Teléfono</button>
+    <!-- Modal Teléfono -->
+<div class="modal fade" id="modalTelefono" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Gestión de Teléfonos</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form crear teléfono -->
+        <form method="POST" action="{{ url_for('invequip.crear_telefono') }}" class="mb-3">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="numero" placeholder="Número" required>
+            </div>
+            <div class="col-md-6">
+              <select class="form-select" name="idusuario" required>
+                <option value="">Seleccione usuario</option>
+                {% for u in usuarios %}
+                  <option value="{{ u[0] }}">{{ u[2] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-success w-100 mt-2">Agregar</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Tabla teléfonos -->
+        <table id="ustelefono"  class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Número</th>
+              <th>Usuario</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in telefonos %}
+            <tr>
+              <td>{{ t[0] }}</td>
+              <td>{{ t[1] }}</td>
+              <td>{{ t[2] or "Sin usuario" }}</td>
+              <td>
+                <!-- Botón editar -->
+                <button class="btn btn-warning btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditarTelefono"
+                        data-id="{{ t[0] }}"
+                        data-numero="{{ t[1] }}">
+                  Editar
+                </button>
+                <!-- Botón eliminar -->
+                <form method="POST" action="{{ url_for('invequip.eliminar_telefono', id=t[0]) }}" class="d-inline">
+                  <button type="submit" class="btn btn-danger btn-sm"
+                          onclick="return confirm('¿Eliminar teléfono?')">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Editar Teléfono -->
+<div class="modal fade" id="modalEditarTelefono" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" id="formEditarTelefono">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title">Editar Teléfono</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editTelefonoId">
+          <div class="mb-3">
+            <label class="form-label">Número</label>
+            <input type="text" class="form-control" name="numero" id="editTelefonoNumero" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+      <button class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#tablabajasu">
+      📉 Ver Bajas
+    </button>
+  </div>
+  <!-- Tabla de usuarios -->
+  <div class="table-responsive">
+    <table id="ususuarios" class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>CC</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Área</th>
+          <th>Cargo</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in usuarios %}
+        <tr>
+          <td>{{ u[0] }}</td>
+          <td>{{ u[1] }}</td>
+          <td>{{ u[2] }}</td>
+          <td>{{ u[3] }}</td>
+          <td>{{ u[5] }}</td>
+          <td>{{ u[6] }}</td>
+          <td>{{ u[7] if u[7] else '-' }}</td>
+          <td>
+            {% if u[4] %}
+              <span class="badge bg-danger">Baja</span>
+            {% else %}
+              <span class="badge bg-success">Activo</span>
+            {% endif %}
+          </td>
+          <td>
+            <!-- Botón editar -->
+            <button class="btn btn-sm btn-warning" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalEditarUsuario"
+                    data-id="{{ u[0] }}" data-cc="{{ u[1] }}" 
+                    data-nombre="{{ u[2] }}" data-email="{{ u[3] }}">
+              Editar
+            </button>       
+<!-- Modal Editar Usuario -->
+<div class="modal fade" id="modalEditarUsuario" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ url_for('invequip.editar_usuario') }}" id="formEditarUsuario">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title">Editar Usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editId">
+          <div class="mb-3">
+            <label class="form-label">CC</label>
+            <input type="text" class="form-control" name="cc" id="editCC">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" name="nombre" id="editNombre">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" id="editEmail">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Área</label>
+            <select class="form-select" name="idarea" id="editArea">
+              {% for a in areas %}
+                <option value="{{ a[0] }}">{{ a[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Cargo</label>
+            <select class="form-select" name="idcargo" id="editCargo">
+              {% for c in cargos %}
+                <option value="{{ c[0] }}">{{ c[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>          
+            <!-- Botón Baja -->
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBajausu{{ u[0] }}">
+              ❌
+            </button>
+            <!-- Modal Baja -->
+            <div class="modal fade" id="modalBajausu{{ u[0] }}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="{{ url_for('invequip.baja_usuario', id=u[0]) }}" method="post">
+                    <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title">Dar de baja ID {{ u[0] }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label class="form-label">Motivo:</label>
+                      <input type="text" name="descripcion" class="form-control mb-2" required>
+                      <label class="form-label">Fecha Baja:</label>
+                      <input type="date" name="fecha_baja" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-danger">Confirmar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>            
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Tabla de bajas -->
+  <div class="collapse mt-4" id="tablabajasu">
+    <h4 class="fw-bold">📉 Registros en Baja</h4>
+    <div class="table-responsive">
+      <table id="usbajas" class="table table-bordered table-hover align-middle">
+        <thead class="table-secondary">
+          <tr>
+            <th>ID</th>
+            <th>ID Registro</th>
+            <th>Tabla</th>
+            <th>Descripción</th>
+            <th>Fecha Baja</th>
+            <th>Fecha Registro</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bajas %}
+          <tr>
+            <td>{{ b[0] }}</td>
+            <td>{{ b[1] }}</td>
+            <td>{{ b[2] }}</td>
+            <td>{{ b[3] }}</td>
+            <td>{{ b[4] }}</td>
+            <td>{{ b[5] }}</td>
+            <td>
+              <form action="{{ url_for('invequip.revertir_baja_usuario', id=b[1]) }}" method="post">
+                <button type="submit" class="btn btn-success btn-sm">🔄 Revertir</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+
+ <div id="usuariodominio" class="seccion card-custom d-none">
       <h3>Usuario Dominio</h3>
       <p>Hola, ingresaste a <strong>Usuario Dominio</strong>.</p>
     </div>
 
+
+
+
+
     <a href="{{ url_for('home') }}" class="btn btn-secondary mt-3">⬅ Volver al Home</a>
   </div>
+  <script>
+  // Área
+  const modalEditarArea = document.getElementById('modalEditarArea');
+  modalEditarArea.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    document.getElementById('editAreaId').value = button.getAttribute('data-id');
+    document.getElementById('editAreaNombre').value = button.getAttribute('data-area');
+    document.getElementById('formEditarArea').action = `/areas/editar/${button.getAttribute('data-id')}`;
+  });
+
+  // Cargo
+  const modalEditarCargo = document.getElementById('modalEditarCargo');
+  modalEditarCargo.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    document.getElementById('editCargoId').value = button.getAttribute('data-id');
+    document.getElementById('editCargoDescripcion').value = button.getAttribute('data-descripcion');
+    document.getElementById('formEditarCargo').action = `/cargos/editar/${button.getAttribute('data-id')}`;
+  });
+
+  // Teléfono
+  const modalEditarTelefono = document.getElementById('modalEditarTelefono');
+  modalEditarTelefono.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    document.getElementById('editTelefonoId').value = button.getAttribute('data-id');
+    document.getElementById('editTelefonoNumero').value = button.getAttribute('data-numero');
+    document.getElementById('formEditarTelefono').action = `/telefonos/editar/${button.getAttribute('data-id')}`;
+  });
+</script>
+
 
   <script>
     const menuBtn = document.getElementById("menuBtn");
@@ -502,7 +1199,7 @@
       }else {
         // Si no hay link, buscar el <a> que contiene el id en su onclick
     document.querySelectorAll('.sidebar a').forEach(a => {
-      if (a.getAttribute("onclick")?.includes(id)) {
+      if (a.getAttribute("addEventListener")?.includes(id)) {
         a.classList.add('active');
       }
     });
@@ -523,7 +1220,7 @@
       // Opcional: marcar el botón activo
       document.querySelectorAll(".sidebar a").forEach(a => {
         a.classList.remove("active");
-        if (a.getAttribute("onclick")?.includes(seccion)) {
+        if (a.getAttribute("addEventListener")?.includes(seccion)) {
           a.classList.add("active");
         }
       });
@@ -539,7 +1236,115 @@
     });
   }, 5000);
 </script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
+<script>
+var modalEditar = document.getElementById('modalEditarUsuario');
+modalEditar.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget;
+  var id = button.getAttribute('data-id');
+  var cc = button.getAttribute('data-cc');
+  var nombre = button.getAttribute('data-nombre');
+  var email = button.getAttribute('data-email');
 
+  modalEditar.querySelector('#editId').value = id;
+  modalEditar.querySelector('#editCC').value = cc;
+  modalEditar.querySelector('#editNombre').value = nombre;
+  modalEditar.querySelector('#editEmail').value = email;
+});
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#tablaAlmacenamiento').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+
+    $('#tablaBajas').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+  
+  
+    $('#ubiyequi').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+
+    $('#usede').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+  
+    $('#upiso').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+
+    $('#uoficina').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+        $('#usarea').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+
+    $('#uscargo').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });   
+     $('#ustelefono').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+
+    $('#usbajas').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });    
+    $('#ususuarios').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+
+  });
+</script>
 </body>
 </html>
