@@ -138,32 +138,244 @@
   </div>
   <!-- Overlay -->
   <div id="overlay"></div>
-  <!-- Contenido -->
-  <div class="content container-fluid">
-    <h1 class="text-center mb-4">Inventario de Equipos</h1>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="mt-2">
-      {% for category, message in messages %}
-        <div class="alert alert-{{ 'warning' if category == 'warning' else ('danger' if category == 'danger' else ('success' if category == 'success' else 'info')) }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  
+<!-- Contenido -->
+<div class="content container-fluid">
+  <h1 class="text-center mb-4">Inventario de Equipos</h1>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap my-3">
+    <p class="mb-0">
+      Bienvenido, <strong>{{ usuario }}</strong> — Rol: <strong>{{ rol }}</strong>
+    </p>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary btn-sm px-3 mt-2 mt-md-0">
+      ⬅ Volver al Home
+    </a>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="mt-2">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'warning' if category == 'warning' else ('danger' if category == 'danger' else ('success' if category == 'success' else 'info')) }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+</div>
+
+<div id="equipo" class="seccion card-custom">
+  <h3 class="mb-4">Equipo</h3>
+
+  <!-- Botones superiores -->
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarEquipo">
+      ➕ Agregar Equipo
+    </button>
+    <button id="toggleEstadoBtn" class="btn btn-primary">
+      Ver bajas
+    </button>
+  </div>
+
+  <!-- Barra búsqueda + paginación -->
+  <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
+    <input type="text" id="searchInput" class="form-control w-auto" placeholder="🔎 Buscar...">
+    <label class="ms-auto">Mostrar:
+      <select id="perPageSelect" class="form-select d-inline-block w-auto">
+        <option value="2" selected>2</option>
+        <option value="4">4</option>
+        <option value="8">8</option>
+        <option value="16">16</option>
+        <option value="32">32</option>
+        <option value="64">64</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- Contenedor tarjetas -->
+  <div id="equiposContainer" class="row g-3">
+    <!-- Tarjetas renderizadas por JS -->
+  </div>
+
+  <!-- Paginación -->
+  <nav>
+    <ul id="pagination" class="pagination justify-content-center mt-4"></ul>
+  </nav>
+</div>
+<!-- ✅ Modal Agregar Equipo -->
+<div class="modal fade" id="modalAgregarEquipo" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <form id="formAgregarEquipo" method="POST" action="{{ url_for('invequip.agregar_equipo') }}" enctype="multipart/form-data">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">➕ Agregar Equipo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
-      {% endfor %}
+        
+        <div class="modal-body">
+          <div class="row g-3">
+            <!-- Datos Equipo -->
+            <h6 class="fw-bold">📦 Datos del Equipo</h6>
+            <div class="col-md-4">
+              <label class="form-label">Código</label>
+              <input type="text" name="codigo" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Tipo</label>
+              <input type="text" name="tipo" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Marca</label>
+              <input type="text" name="marca" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Modelo</label>
+              <input type="text" name="modelo" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Serial</label>
+              <input type="text" name="serial" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Fecha Compra</label>
+              <input type="date" name="fechacompra" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Estado</label>
+              <select name="estado" class="form-select">
+                <option value="Activo" selected>Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
+            
+            <!-- Ubicación -->
+            <h6 class="fw-bold mt-3">📍 Ubicación</h6>
+            <div class="col-md-4">
+              <label class="form-label">Sede</label>
+              <select name="idsede" class="form-select">
+                {% for s in sedes %}
+                  <option value="{{ s[0] }}">{{ s[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Piso</label>
+              <select name="idpiso" class="form-select">
+                {% for p in pisos %}
+                  <option value="{{ p[0] }}">{{ p[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Oficina</label>
+              <select name="idoficina" class="form-select">
+                {% for o in oficinas %}
+                  <option value="{{ o[0] }}">{{ o[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Usuario Asignado</label>
+              <select name="idusuario" class="form-select">
+                <option value="">-- Sin asignar --</option>
+                {% for u in usuarios %}
+                  <option value="{{ u[0] }}">{{ u[2] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+  <label class="form-label">Foto (seleccionar o tomar)</label>
+  <input type="file" name="foto" class="form-control"
+         accept="image/*" capture="environment">
+  <div class="form-text">Puedes elegir una imagen o tomarla con la cámara.</div>
+</div>
+
+            <!-- Características -->
+            <h6 class="fw-bold mt-3">⚙️ Características</h6>
+            <div class="col-md-4">
+              <label class="form-label">Nombre Equipo</label>
+              <input type="text" name="nombreequipo" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Dirección MAC</label>
+              <input type="text" name="direccionmac" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">IP</label>
+              <input type="text" name="ip" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Sockets</label>
+              <input type="number" name="sockets" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Frecuencia RAM (MHz)</label>
+              <input type="number" name="frecuenciaram" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Usuario Dominio</label>
+              <select name="idusuariodominio" class="form-select">
+                {% for ud in usuarios_dominio %}
+                  <option value="{{ ud[0] }}">{{ ud[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Anydesk</label>
+              <input type="text" name="anidesk" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Board</label>
+              <select name="idboard" class="form-select">
+                {% for b in board %}
+                  <option value="{{ b[0] }}">{{ b[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Sistema Operativo</label>
+              <select name="idsistemaoperativo" class="form-select">
+                {% for so in sistemaoperas %}
+                  <option value="{{ so[0] }}">{{ so[1] }} ({{ so[2] }})</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Procesador</label>
+              <select name="idprocesador" class="form-select">
+                {% for pr in procesador %}
+                  <option value="{{ pr[0] }}">{{ pr[1] }} - {{ pr[2] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Observaciones</label>
+              <textarea name="observaciones" class="form-control"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
     </div>
-  {% endif %}
-{% endwith %}
-    <p>Bienvenido, <strong>{{ usuario }}</strong> — Rol: <strong>{{ rol }}</strong></p>
-
-
-
-
-
-    <!-- Secciones -->
-    <div id="equipo" class="seccion card-custom">
-      <h3>Equipo</h3>
-      <p>Hola, ingresaste a <strong>Equipo</strong>.</p>
+  </div>
+</div>
+<!-- Modal para ver imagen en grande -->
+<div class="modal fade" id="imagenModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl"> <!-- modal-xl para más grande -->
+    <div class="modal-content bg-dark">
+      <div class="modal-body text-center p-0">
+        <img id="imagenModalSrc" src="" class="img-fluid rounded" alt="Imagen equipo">
+      </div>
     </div>
+  </div>
+</div>
+
 
 
 
@@ -602,18 +814,375 @@
 </div>
 
 
+<div id="board" class="seccion card-custom d-none">
+  <h3 class="mb-3">Board</h3>
+  <!-- Botones superiores -->
+  <div class="mb-3">
+    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarBoard">
+      ➕ Agregar Board
+    </button>
+    <button class="btn btn-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#bajasTableboard">
+      📉 Ver Bajas
+    </button>
+  </div>
 
-
-
-    <div id="board" class="seccion card-custom d-none">
-      <h3>Board</h3>
-      <p>Hola, ingresaste a <strong>Board</strong>.</p>
+  <!-- Tabla Procesadores -->
+     <div class="table-responsive">
+  <table id="boboard" class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Tarjeta Madre</th>
+        <th>Chipset</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody >
+      {% for boa in board %}
+      <tr>
+        <td>{{ boa[0] }}</td>
+        <td>{{ boa[1] }}</td>
+        <td>{{ boa[2] }}</td>
+        <td>
+                      <!-- Botón Baja -->
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBaja2{{ boa[0] }}">
+              ❌
+            </button>
+                        <!-- Modal Baja -->
+            <div class="modal fade" id="modalBaja2{{ boa[0] }}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="{{ url_for('invequip.baja_board', id=boa[0]) }}" method="post">
+                    <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title">Dar de baja ID {{ boa[0] }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label class="form-label">Motivo:</label>
+                      <input type="text" name="descripcion" class="form-control mb-2" required>
+                      <label class="form-label">Fecha Baja:</label>
+                      <input type="date" name="fecha_baja" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-danger">Confirmar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+          </form>
+                </div>
+              </div>
+            </div>
+            <!-- Botón Editar -->
+          <button class="btn btn-primary btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEditarBoard"
+                  data-idboa="{{  boa[0] }}"
+                 data-tarjetamadre="{{  boa[1]}}"
+                  data-chipset="{{  boa[2]}}">
+            ✏️ Editar
+          </button>
+                       <!-- Modal Editar -->
+<div class="modal fade" id="modalEditarBoard" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formEditarBoard" method="POST" action="{{ url_for('invequip.editar_board') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Board</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editidboa">
+          <div class="mb-3">
+            <label>Tarjeta Madre</label>
+            <input type="text" class="form-control" name="tarjetamadre" id="editar_tarjetamadre" required>
+          </div>
+          <div class="mb-3">
+            <label>chipset </label>
+            <input type="text" class="form-control" name="chipset" id="editar_chipset" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Actualizar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
 
-    <div id="grafica" class="seccion card-custom d-none">
-      <h3>Gráfica</h3>
-      <p>Hola, ingresaste a <strong>Gráfica</strong>.</p>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+ <!-- Tabla de bajas -->
+  <div class="collapse mt-4" id="bajasTableboard">
+    <h4 class="fw-bold">📉 Registros en Baja</h4>
+    <div class="table-responsive">
+      <table id="boabajaboard" class="table table-bordered table-hover align-middle">
+        <thead class="table-secondary">
+          <tr>
+            <th>ID</th>
+            <th>ID Registro</th>
+            <th>Tabla</th>
+            <th>Descripción</th>
+            <th>Fecha Baja</th>
+            <th>Fecha Registro</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bajasboard %}
+          <tr>
+            <td>{{ b[0] }}</td>
+            <td>{{ b[1] }}</td>
+            <td>{{ b[2] }}</td>
+            <td>{{ b[3] }}</td>
+            <td>{{ b[4] }}</td>
+            <td>{{ b[5] }}</td>
+            <td>
+              <form action="{{ url_for('invequip.revertir_baja_board', id=b[1]) }}" method="post">
+                <button type="submit" class="btn btn-success btn-sm">🔄 Revertir</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
+</div>
+<!-- Modal Agregar -->
+<div class="modal fade" id="modalAgregarBoard" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formAgregarBoard" method="POST" action="{{ url_for('invequip.agregar_board') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar Board</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Tarjeta Madre</label>
+            <input type="text" class="form-control" name="tarjetamadre" required>
+          </div>
+          <div class="mb-3">
+            <label>chipset</label>
+            <input type="text" class="form-control" name="chipset" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="grafica" class="seccion card-custom d-none">
+  <h3 class="mb-4 text-center fw-bold">
+  <i ></i> grafica
+</h3>
+  <!-- Botones superiores -->
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalgrafica">
+      ➕ Nueva grafica
+    </button>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalgraficapc">
+      ➕ Nuevo grafica pc
+    </button>
+    <button class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#bajasTablegrafica">
+      📉 Ver Bajas
+    </button>
+  </div>
+  <!-- Tabla principal -->
+  <div class="table-responsive">
+    <table id="tablagrafica" class="table table-striped table-hover align-middle shadow-sm">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>tipo</th>
+          <th>capacidad</th>
+          <th>Marca</th>
+          <th>chipset</th>
+          <th>baja</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for g in graficapc %}
+        <tr>
+          <td>{{ g[0] }}</td>
+          <td>{{ g[2] }}</td>
+          <td>{{ g[3] }}</td>
+          <td>{{ g[4] }}</td>
+          <td>{{ g[5] }}</td>
+          <td>{{ g[6] }}</td>
+          <td class="d-flex gap-1">           
+            <!-- Botón Baja -->
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBajagrafica{{ g[0] }}">
+              ❌
+            </button>
+            <!-- Modal Baja -->
+            <div class="modal fade" id="modalBajagrafica{{ g[0] }}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="{{ url_for('invequip.baja_grafica', id=g[0]) }}" method="post">
+                    <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title">Dar de baja ID {{ g[0] }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label class="form-label">Motivo:</label>
+                      <input type="text" name="descripcion" class="form-control mb-2" required>
+                      <label class="form-label">Fecha Baja:</label>
+                      <input type="date" name="fecha_baja" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-danger">Confirmar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- Botón Actualizar -->
+            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalActualizargrafica{{ g[0] }}">
+              ✏️
+            </button>
+            <!-- Modal Actualizar -->
+            <div class="modal fade" id="modalActualizargrafica{{ g[0] }}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="{{ url_for('invequip.actualizar_grafica', id=g[0]) }}" method="post">
+                    <div class="modal-header bg-info text-white">
+                      <h5 class="modal-title">Actualizar ID {{ g[0] }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label class="form-label">grafica:</label>
+                      <select name="id_graficapc" class="form-select mb-2">
+                        {% for gr in grafica %}
+                          <option value="{{ gr[0] }}" {% if gr[0] == g[0] %}selected{% endif %}>
+                            ID:{{gr[0]}}-tipo:{{gr[1]}}capacidad:{{gr[2]}}-marca:{{gr[3]}}chipset:{{gr[4]}}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-info">Actualizar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Tabla de bajas -->
+  <div class="collapse mt-4" id="bajasTablegrafica">
+    <h4 class="fw-bold">📉 Registros en Baja</h4>
+    <div class="table-responsive">
+      <table id="tablaBajas" class="table table-bordered table-hover align-middle">
+        <thead class="table-secondary">
+          <tr>
+            <th>ID</th>
+            <th>ID Registro</th>
+            <th>Tabla</th>
+            <th>Descripción</th>
+            <th>Fecha Baja</th>
+            <th>Fecha Registro</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for grb in graficabaja %}
+          <tr>
+            <td>{{ grb[0] }}</td>
+            <td>{{ grb[1] }}</td>
+            <td>{{ grb[2] }}</td>
+            <td>{{ grb[3] }}</td>
+            <td>{{ grb[4] }}</td>
+            <td>{{ grb[5] }}</td>
+            <td>
+              <form action="{{ url_for('invequip.revertir_baja_grafica', id=grb[1]) }}" method="post">
+                <button type="submit" class="btn btn-success btn-sm">🔄 Revertir</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- Modal Nueva grafica -->
+<div class="modal fade" id="modalgrafica" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('invequip.nueva_grafica') }}" method="post">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">➕ Nueva grafica</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">tipo:</label>
+          <input type="text" name="tipo" class="form-control mb-3" required>"
+
+          <label class="form-label">Capacidad (GB):</label>
+          <input type="number" name="capacidad" class="form-control mb-3" required>
+
+          <label class="form-label">marca:</label>
+          <input type="text" name="marca" class="form-control mb-3" required>
+
+          <label class="form-label">chipset:</label>
+          <input type="text" name="chipset" class="form-control mb-3" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal Nuevo graficapc -->
+<div class="modal fade" id="modalgraficapc" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('invequip.nuevo_graficapc') }}" method="post">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">➕ Nuevo graficapc</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Característica:</label>
+          <select name="id_grafica" class="form-select mb-3" required>
+            {% for grp in grafica %}
+              <option value="{{ grp[0] }}">{{ grp[1] }}-{{ grp[2] }}-{{ grp[3] }}-{{ grp[4] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 
     <div id="licencias" class="seccion card-custom d-none">
       <h3>Licencias</h3>
@@ -640,23 +1209,559 @@
       <p>Hola, ingresaste a <strong>Memoria RAM</strong>.</p>
     </div>
 
-    <div id="procesador" class="seccion card-custom d-none">
-      <h3>Procesador</h3>
-      <p>Hola, ingresaste a <strong>Procesador</strong>.</p>
+
+
+
+
+
+<div id="procesador" class="seccion card-custom d-none">
+  <h3 class="mb-3">Procesador</h3>
+  <!-- Botones superiores -->
+  <div class="mb-3">
+    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarProcesador">
+      ➕ Agregar Procesador
+    </button>
+    <button class="btn btn-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#bajasTableproc">
+      📉 Ver Bajas
+    </button>
+  </div>
+
+  <!-- Tabla Procesadores -->
+   <div class="table-responsive"></div>
+  <table id="procprocesador" class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Frecuencia (GHz)</th>
+        <th>Núcleos</th>
+        <th>Plataforma</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody >
+      {% for proc in procesador %}
+      <tr>
+        <td>{{ proc[0] }}</td>
+        <td>{{ proc[1] }}</td>
+        <td>{{ proc[2] }}</td>
+        <td>{{ proc[3] }}</td>
+        <td>{{ proc[4] }}</td>
+        <td>{{ proc[5] }}</td>
+        <td>
+                      <!-- Botón Baja -->
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBaja1{{ proc[0] }}">
+              ❌
+            </button>
+                        <!-- Modal Baja -->
+            <div class="modal fade" id="modalBaja1{{ proc[0] }}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="{{ url_for('invequip.baja_procesador', id=proc[0]) }}" method="post">
+                    <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title">Dar de baja ID {{ proc[0] }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label class="form-label">Motivo:</label>
+                      <input type="text" name="descripcion" class="form-control mb-2" required>
+                      <label class="form-label">Fecha Baja:</label>
+                      <input type="date" name="fecha_baja" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-danger">Confirmar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+          </form>
+                </div>
+              </div>
+            </div>
+          <!-- Botón Editar -->
+          <button class="btn btn-primary btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEditarProcesador"
+                  data-id="{{  proc[0] }}"
+                  data-marca="{{  proc[1]}}"
+                  data-modelo="{{  proc[2]}}"
+                  data-frecuencia="{{  proc[3] }}"
+                  data-nucleos="{{  proc[4] }}"
+                  data-plataforma="{{  proc[5] }}">
+            ✏️ Editar
+          </button>
+                      <!-- Modal Editar -->
+<div class="modal fade" id="modalEditarProcesador" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formEditarProcesador" method="POST" action="{{ url_for('invequip.editar_procesador') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Procesador</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editar_id">
+          <div class="mb-3">
+            <label>Marca</label>
+            <input type="text" class="form-control" name="marca" id="editar_marca" required>
+          </div>
+          <div class="mb-3">
+            <label>Modelo</label>
+            <input type="text" class="form-control" name="modelo" id="editar_modelo" required>
+          </div>
+          <div class="mb-3">
+            <label>Frecuencia (GHz)</label>
+            <input type="number" step="0.01" class="form-control" name="frecuencia" id="editar_frecuencia" required>
+          </div>
+          <div class="mb-3">
+            <label>Núcleos</label>
+            <input type="number" class="form-control" name="nucleos" id="editar_nucleos" required>
+          </div>
+          <div class="mb-3">
+            <label>Plataforma</label>
+            <input type="text" class="form-control" name="plataforma" id="editar_plataforma" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Actualizar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
     </div>
-
-    <div id="so" class="seccion card-custom d-none">
-      <h3>Sistema Operativo</h3>
-      <p>Hola, ingresaste a <strong>Sistema Operativo</strong>.</p>
+  </div>
+</div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+ <!-- Tabla de bajas -->
+  <div class="collapse mt-4" id="bajasTableproc">
+    <h4 class="fw-bold">📉 Registros en Baja</h4>
+    <div class="table-responsive">
+      <table id="procbajaprocesador" class="table table-bordered table-hover align-middle">
+        <thead class="table-secondary">
+          <tr>
+            <th>ID</th>
+            <th>ID Registro</th>
+            <th>Tabla</th>
+            <th>Descripción</th>
+            <th>Fecha Baja</th>
+            <th>Fecha Registro</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bajasprocesador %}
+          <tr>
+            <td>{{ b[0] }}</td>
+            <td>{{ b[1] }}</td>
+            <td>{{ b[2] }}</td>
+            <td>{{ b[3] }}</td>
+            <td>{{ b[4] }}</td>
+            <td>{{ b[5] }}</td>
+            <td>
+              <form action="{{ url_for('invequip.revertir_baja_procesador', id=b[1]) }}" method="post">
+                <button type="submit" class="btn btn-success btn-sm">🔄 Revertir</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-
-    <div id="tecnicos" class="seccion card-custom d-none">
-      <h3>Técnicos</h3>
-      <p>Hola, ingresaste a <strong>Técnicos</strong>.</p>
+  </div>
+</div>
+<!-- Modal Agregar -->
+<div class="modal fade" id="modalAgregarProcesador" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formAgregarProcesador" method="POST" action="{{ url_for('invequip.agregar_procesador') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar Procesador</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Marca</label>
+            <input type="text" class="form-control" name="marca" required>
+          </div>
+          <div class="mb-3">
+            <label>Modelo</label>
+            <input type="text" class="form-control" name="modelo" required>
+          </div>
+          <div class="mb-3">
+            <label>Frecuencia (GHz)</label>
+            <input type="number" step="0.01" class="form-control" name="frecuencia" required>
+          </div>
+          <div class="mb-3">
+            <label>Núcleos</label>
+            <input type="number" class="form-control" name="nucleos" required>
+          </div>
+          <div class="mb-3">
+            <label>Plataforma</label>
+            <input type="text" class="form-control" name="plataforma" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
+
+<div id="so" class="seccion card-custom d-none">
+  <h3 class="mb-3">Sistema Operativo</h3>
+  <!-- Botones superiores -->
+  <div class="mb-3">
+    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarSO">
+      ➕ Agregar SO
+    </button>
+  </div>
+
+  <!-- Tabla de Sistema Operativo -->
+  <table id="sosistemaoperativo" class="table table-striped table-bordered table-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Descripción</th>
+        <th>Arquitectura</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for so in sistemaoperas %}
+      <tr>
+        <td>{{ so[0] }}</td>
+        <td>{{ so[1] }}</td>
+        <td>{{ so[2] }}</td>
+        <td>
+          <!-- Botón Editar -->
+          <button class="btn btn-warning btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEditarSO"
+                  data-id="{{ so[0] }}"
+                  data-descripcion="{{ so[1] }}"
+                  data-arquitectura="{{ so[2] }}">
+            ✏️ Editar
+          </button>
+
+          <!-- Botón Eliminar -->
+          <form action="{{ url_for('invequip.eliminar_so') }}" method="POST" class="d-inline">
+            <input type="hidden" name="id" value="{{ so[0] }}">
+            <button type="submit" class="btn btn-danger btn-sm"
+                    onclick="return confirm('¿Seguro que quieres eliminar este sistema operativo?')">
+              🗑 Eliminar
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ✅ Modal Agregar SO -->
+<div class="modal fade" id="modalAgregarSO" tabindex="-1">
+  <div class="modal-dialog">
+    <form action="{{ url_for('invequip.agregar_so') }}" method="POST" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Sistema Operativo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Descripción</label>
+          <input type="text" name="descripcion" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Arquitectura</label>
+          <input type="text" name="arquitectura" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ✅ Modal Editar SO -->
+<div class="modal fade" id="modalEditarSO" tabindex="-1">
+  <div class="modal-dialog">
+    <form action="{{ url_for('invequip.editar_so') }}" method="POST" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Sistema Operativo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="id" id="editIdSO">
+        <div class="mb-3">
+          <label class="form-label">Descripción</label>
+          <input type="text" name="descripcion" id="editDescripcionSO" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Arquitectura</label>
+          <input type="text" name="arquitectura" id="editArquitecturaSO" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="tecnicos" class="seccion card-custom d-none">
+  <h3 class="mb-3">Técnicos</h3>
+  <!-- Botones superiores -->
+  <div class="mb-3">
+    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarTecnico">
+      ➕ Agregar Técnico
+    </button>
+    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTelefonosTecnicos">
+      📞 Teléfonos Técnicos
+    </button>
+  </div>
+
+  <!-- Tabla Técnicos -->
+ <div class="table-responsive">
+  <table id="tectecnicos" class="table table-striped table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Cédula/NIT</th>
+        <th>Nombre</th>
+        <th>Fecha Registro</th>
+        <th>Teléfono</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tecnicos %}
+      <tr>
+        <td>{{ t[0] }}</td>
+        <td>{{ t[1] }}</td>
+        <td>{{ t[2] }}</td>
+        <td>{{ t[3] }}</td>
+        <td>
+          {% if t[4] %}
+            {{ t[4] }}
+          {% else %}
+            <span class="text-muted">Sin teléfono</span>
+          {% endif %}
+        </td>
+        <td>
+          <!-- Botón editar -->
+          <button class="btn btn-warning btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEditarTecnico"
+                  data-id="{{ t[0] }}"
+                  data-cc="{{ t[1] }}"
+                  data-nombre="{{ t[2] }}">
+            ✏️ Editar
+          </button>
+
+          <!-- Botón eliminar -->
+          <form method="POST" action="{{ url_for('invequip.eliminar_tecnico') }}" class="d-inline">
+            <input type="hidden" name="id" value="{{ t[0] }}">
+            <button type="submit" class="btn btn-danger btn-sm"
+                    onclick="return confirm('¿Seguro de eliminar este técnico?')">
+              🗑️ Eliminar
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 
+  <!-- ✅ Modal Agregar Técnico -->
+  <div class="modal fade" id="modalAgregarTecnico" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{{ url_for('invequip.agregar_tecnico') }}">
+          <div class="modal-header">
+            <h5 class="modal-title">Agregar Técnico</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Cédula/NIT</label>
+              <input type="text" class="form-control" name="cc_nit" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" name="nombre" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
+  <!-- ✅ Modal Editar Técnico -->
+  <div class="modal fade" id="modalEditarTecnico" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{{ url_for('invequip.editar_tecnico') }}">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Técnico</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" id="editTecnicoId">
+            <div class="mb-3">
+              <label class="form-label">Cédula/NIT</label>
+              <input type="text" class="form-control" name="cc_nit" id="editTecnicoCC" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" name="nombre" id="editTecnicoNombre" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-warning">Actualizar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Modal Teléfonos Técnicos -->
+  <div class="modal fade" id="modalTelefonosTecnicos" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Teléfonos Técnicos</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <table id="tecteletecnicos" class="table table-striped table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <th>ID Teléfono</th>
+                <th>Número</th>
+                <th>Técnico</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for tel in teletec %}
+              <tr>
+                <td>{{ tel[0] }}</td>
+                <td>{{ tel[1] }}</td>
+                <td>{{ tel[3] }}</td>
+                <td>
+                  <!-- Editar -->
+                  <button class="btn btn-warning btn-sm"
+        data-bs-toggle="modal"
+        data-bs-target="#modalEditarTelefonoTecnico"
+        data-id="{{ tel[0] }}"
+        data-numero="{{ tel[1] }}"
+        data-idtecnico="{{ tel[2] }}">
+  ✏️ Editar
+</button>
+
+                  <!-- Eliminar -->
+                  <form method="POST" action="{{ url_for('invequip.eliminar_telefono_tecnico') }}" class="d-inline">
+                    <input type="hidden" name="id" value="{{ tel[0] }}">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('¿Seguro de eliminar este teléfono?')">
+                      🗑️ Eliminar
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <!-- Botón Agregar Teléfono -->
+          <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarTelefonoTecnico">
+            ➕ Agregar Teléfono
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Modal Agregar Teléfono Técnico -->
+  <div class="modal fade" id="modalAgregarTelefonoTecnico" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{{ url_for('invequip.agregar_telefono_tecnico') }}">
+          <div class="modal-header">
+            <h5 class="modal-title">Agregar Teléfono Técnico</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Técnico</label>
+              <select class="form-control" name="idtecnico" required>
+                {% for t in tecnicos_list %}
+                <option value="{{ t[0] }}">{{ t[2] }} - {{ t[3] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Número</label>
+              <input type="text" class="form-control" name="numero" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- ✅ Modal Editar Teléfono Técnico -->
+<div class="modal fade" id="modalEditarTelefonoTecnico" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('invequip.editar_telefono_tecnico') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Teléfono Técnico</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editTelTecId">
+
+          <div class="mb-3">
+            <label class="form-label">Técnico</label>
+            <select class="form-control" name="idtecnico" id="editTelTecTecnico" required>
+              {% for t in tecnicos_list %}
+              <option value="{{ t[0] }}">{{ t[1] }} - {{ t[2] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Número</label>
+            <input type="text" class="form-control" name="numero" id="editTelTecNumero" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-warning">Actualizar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
 
 <div id="usuarios" class="seccion card-custom d-none"> 
   <h3 class="mb-3">Usuarios</h3>
@@ -999,13 +2104,17 @@
           </td>
           <td>
             <!-- Botón editar -->
-            <button class="btn btn-sm btn-warning" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalEditarUsuario"
-                    data-id="{{ u[0] }}" data-cc="{{ u[1] }}" 
-                    data-nombre="{{ u[2] }}" data-email="{{ u[3] }}">
-              Editar
-            </button>       
+<button class="btn btn-sm btn-warning"
+        data-bs-toggle="modal"
+        data-bs-target="#modalEditarUsuario"
+        data-id="{{ u[0] }}"
+        data-cc="{{ u[1] }}"
+        data-nombre="{{ u[2] }}"
+        data-email="{{ u[3] }}"
+        data-idarea="{{ u[8] }}"     
+        data-idcargo="{{ u[9] }}">
+  Editar
+</button>      
 <!-- Modal Editar Usuario -->
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1">
   <div class="modal-dialog">
@@ -1017,18 +2126,22 @@
         </div>
         <div class="modal-body">
           <input type="hidden" name="id" id="editId">
+
           <div class="mb-3">
             <label class="form-label">CC</label>
             <input type="text" class="form-control" name="cc" id="editCC">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Nombre</label>
             <input type="text" class="form-control" name="nombre" id="editNombre">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" name="email" id="editEmail">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Área</label>
             <select class="form-select" name="idarea" id="editArea">
@@ -1037,6 +2150,7 @@
               {% endfor %}
             </select>
           </div>
+
           <div class="mb-3">
             <label class="form-label">Cargo</label>
             <select class="form-select" name="idcargo" id="editCargo">
@@ -1046,13 +2160,14 @@
             </select>
           </div>
         </div>
+
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Guardar cambios</button>
         </div>
       </div>
     </form>
   </div>
-</div>          
+</div>
             <!-- Botón Baja -->
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBajausu{{ u[0] }}">
               ❌
@@ -1103,7 +2218,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for b in bajas %}
+          {% for b in bajas_usuarios %}
           <tr>
             <td>{{ b[0] }}</td>
             <td>{{ b[1] }}</td>
@@ -1128,17 +2243,106 @@
 
 
 
- <div id="usuariodominio" class="seccion card-custom d-none">
-      <h3>Usuario Dominio</h3>
-      <p>Hola, ingresaste a <strong>Usuario Dominio</strong>.</p>
-    </div>
+<div id="usuariodominio" class="seccion card-custom d-none">
+  <h3 class="mb-3">Usuario Dominio</h3>
 
-
-
-
-
-    <a href="{{ url_for('home') }}" class="btn btn-secondary mt-3">⬅ Volver al Home</a>
+  <!-- Botón agregar -->
+  <div class="mb-3">
+    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarUsuarioDominio">
+      ➕ Agregar Usuario Dominio
+    </button>
   </div>
+
+  <!-- Tabla Usuario Dominio -->
+  <div class="table-responsive">
+    <table id="ususuariodominio" class="table table-striped table-bordered table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ud in usuarios_dominio %}
+          <tr>
+            <td>{{ ud[0] }}</td>
+            <td>{{ ud[1] }}</td>
+            <td>
+              <!-- Botón editar -->
+              <button class="btn btn-warning btn-sm" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#modalEditarUsuarioDominio"
+                      data-id="{{ ud[0] }}" 
+                      data-nombre="{{ ud[1] }}">
+                ✏️ Editar
+              </button>
+
+              <!-- Botón eliminar -->
+              <form method="POST" action="{{ url_for('invequip.eliminar_usuario_dominio') }}" class="d-inline">
+                <input type="hidden" name="id" value="{{ ud[0] }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro de eliminar este usuario de dominio?')">
+                  🗑️ Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ✅ Modal Agregar -->
+  <div class="modal fade" id="modalAgregarUsuarioDominio" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{{ url_for('invequip.agregar_usuario_dominio') }}">
+          <div class="modal-header">
+            <h5 class="modal-title">Agregar Usuario Dominio</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" name="nombre" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- ✅ Modal Editar Usuario Dominio -->
+<div class="modal fade" id="modalEditarUsuarioDominio" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('invequip.editar_usuario_dominio') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Usuario Dominio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 🚨 Aquí cambié el id -->
+          <input type="hidden" name="id" id="editUsuarioDominioId">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <!-- 🚨 También cambié este -->
+            <input type="text" class="form-control" name="nombre" id="editUsuarioDominioNombre" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-warning">Actualizar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
   <script>
   // Área
   const modalEditarArea = document.getElementById('modalEditarArea');
@@ -1167,8 +2371,36 @@
     document.getElementById('formEditarTelefono').action = `/telefonos/editar/${button.getAttribute('data-id')}`;
   });
 </script>
+<!-- Script para pasar datos al modal Editar Usuario Dominio -->
+<script>
+  var modalEditarUsuarioDominio = document.getElementById('modalEditarUsuarioDominio');
+  modalEditarUsuarioDominio.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var id = button.getAttribute('data-id');
+    var nombre = button.getAttribute('data-nombre');
 
+    modalEditarUsuarioDominio.querySelector('#editUsuarioDominioId').value = id;
+    modalEditarUsuarioDominio.querySelector('#editUsuarioDominioNombre').value = nombre;
+  });
+</script>
+<!-- Script Editar Técnico -->
+<script>
+var modalEditarTecnico = document.getElementById('modalEditarTecnico');
+modalEditarTecnico.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget;
+  document.getElementById('editTecnicoId').value = button.getAttribute('data-id');
+  document.getElementById('editTecnicoCC').value = button.getAttribute('data-cc');
+  document.getElementById('editTecnicoNombre').value = button.getAttribute('data-nombre');
+});
 
+// Script Editar Teléfono Técnico
+var modalEditarTelTec = document.getElementById('modalEditarTelefonoTecnico');
+modalEditarTelTec.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget;
+  document.getElementById('editTelTecId').value = button.getAttribute('data-id');
+  document.getElementById('editTelTecNumero').value = button.getAttribute('data-numero');
+});
+</script>
   <script>
     const menuBtn = document.getElementById("menuBtn");
     const sidebar = document.getElementById("sidebar");
@@ -1239,23 +2471,230 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-
 <script>
-var modalEditar = document.getElementById('modalEditarUsuario');
-modalEditar.addEventListener('show.bs.modal', function (event) {
+// Pasar datos al modal Editar SO
+var modalEditarSO = document.getElementById('modalEditarSO');
+modalEditarSO.addEventListener('show.bs.modal', function (event) {
   var button = event.relatedTarget;
   var id = button.getAttribute('data-id');
-  var cc = button.getAttribute('data-cc');
-  var nombre = button.getAttribute('data-nombre');
-  var email = button.getAttribute('data-email');
+  var descripcion = button.getAttribute('data-descripcion');
+  var arquitectura = button.getAttribute('data-arquitectura');
 
-  modalEditar.querySelector('#editId').value = id;
-  modalEditar.querySelector('#editCC').value = cc;
-  modalEditar.querySelector('#editNombre').value = nombre;
-  modalEditar.querySelector('#editEmail').value = email;
+  modalEditarSO.querySelector('#editIdSO').value = id;
+  modalEditarSO.querySelector('#editDescripcionSO').value = descripcion;
+  modalEditarSO.querySelector('#editArquitecturaSO').value = arquitectura;
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const modalEditar = document.getElementById('modalEditarUsuario');
 
+  modalEditar.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; // Botón que abrió el modal
+
+    // Obtener valores del dataset
+    const id = button.getAttribute('data-id');
+    const cc = button.getAttribute('data-cc');
+    const nombre = button.getAttribute('data-nombre');
+    const email = button.getAttribute('data-email');
+    const idArea = button.getAttribute('data-idarea');
+    const idCargo = button.getAttribute('data-idcargo');
+
+    // Asignar valores a los inputs/selects
+    modalEditar.querySelector('#editId').value = id;
+    modalEditar.querySelector('#editCC').value = cc;
+    modalEditar.querySelector('#editNombre').value = nombre;
+    modalEditar.querySelector('#editEmail').value = email;
+
+    // Seleccionar el área y cargo actuales
+    modalEditar.querySelector('#editArea').value = idArea || "";
+    modalEditar.querySelector('#editCargo').value = idCargo || "";
+  });
+});
+</script>
+<script>
+let estado = "funcionales"; 
+let page = 1;
+let perPage = 2;
+let search = "";
+
+document.addEventListener("DOMContentLoaded", () => {
+  cargarEquipos();
+
+  document.getElementById("toggleEstadoBtn").addEventListener("click", () => {
+    estado = (estado === "funcionales") ? "bajas" : "funcionales";
+    page = 1;
+    cargarEquipos();
+    document.getElementById("toggleEstadoBtn").textContent = 
+      (estado === "funcionales") ? "Ver bajas" : "Ver equipos funcionales";
+  });
+
+  document.getElementById("searchInput").addEventListener("input", e => {
+    search = e.target.value;
+    page = 1;
+    cargarEquipos();
+  });
+
+  document.getElementById("perPageSelect").addEventListener("change", e => {
+    perPage = parseInt(e.target.value);
+    page = 1;
+    cargarEquipos();
+  });
+
+  
+});
+
+
+async function cargarEquipos() {
+  const resp = await fetch(`/api/equipos?estado=${estado}&page=${page}&per_page=${perPage}&search=${encodeURIComponent(search)}`);
+  const data = await resp.json();
+  renderEquipos(data.equipos);
+  renderPagination(data.page, data.pages);
+}
+
+function renderEquipos(equipos) {
+  const container = document.getElementById("equiposContainer");
+  container.innerHTML = "";
+
+  if (!equipos.length) {
+    container.innerHTML = "<p class='text-muted'>No se encontraron equipos.</p>";
+    return;
+  }
+
+  equipos.forEach(eq => {
+    const fotoSrc = eq.foto 
+      ? `data:image/jpeg;base64,${eq.foto}` 
+      : "https://via.placeholder.com/600x400?text=Sin+Foto";
+
+    const card = document.createElement("div");
+    card.className = "col-md-6 col-lg-4";
+    card.innerHTML = `
+      <div class="card h-100 shadow-sm">
+        <img src="${fotoSrc}" 
+             class="card-img-top img-equipo" 
+             style="object-fit:cover;height:200px;cursor:pointer">
+        <div class="card-body">
+          <h5 class="card-title">${eq.marca || ""} ${eq.modelo || ""}</h5>
+          <p class="card-text"><strong>Código:</strong> ${eq.codigo}</p>
+          <p class="card-text"><strong>Serial:</strong> ${eq.serial}</p>
+          <p class="card-text"><strong>Sede:</strong> ${eq.sede || "No asignado" }</p>
+          <p class="card-text"><strong>Oficina:</strong> ${eq.oficina || "No asignado"}</p>
+          <p class="card-text"><strong>Usuario:</strong> ${eq.usuario || "No asignado"}</p>
+          <a href="/equiposcaracteristicas/${eq.id}" class="btn btn-primary btn-sm mt-2">
+        Ver características
+      </a>
+      ${estado === "bajas" ? `
+            <button class="btn btn-success btn-sm mt-2 revertir-btn" data-id="${eq.id}">
+              Revertir baja
+            </button>` : ""}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+
+    // Evento doble click en la imagen
+    const img = card.querySelector(".img-equipo");
+    img.addEventListener("dblclick", () => {
+      const modalImg = document.getElementById("imagenModalSrc");
+      modalImg.src = fotoSrc;   // ⚡️ asignar src antes de abrir
+      const modal = new bootstrap.Modal(document.getElementById("imagenModal"));
+      modal.show();
+    });
+    
+    // Evento click en "Revertir baja"
+    const revertirBtn = card.querySelector(".revertir-btn");
+    if (revertirBtn) {
+      revertirBtn.addEventListener("click", async () => {
+        const id = revertirBtn.dataset.id;
+        if (confirm("¿Seguro que deseas revertir la baja de este equipo?")) {
+          try {
+            const resp = await fetch(`/api/revertir_baja/${id}`, { method: "POST" });
+            if (!resp.ok) throw new Error("Error al revertir la baja");
+            alert("Equipo revertido con éxito ✅");
+            cargarEquipos(); // refrescar listado
+          } catch (err) {
+            alert("❌ " + err.message);
+          }
+        }
+      });
+    }
+  });
+}
+
+
+function renderPagination(current, total) {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
+
+  for (let i = 1; i <= total; i++) {
+    const li = document.createElement("li");
+    li.className = "page-item " + (i === current ? "active" : "");
+    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+    li.addEventListener("click", e => {
+      e.preventDefault();
+      page = i;
+      cargarEquipos();
+    });
+    pagination.appendChild(li);
+  }
+}
+</script>
+<script>
+  var modalEditarTel = document.getElementById('modalEditarTelefonoTecnico');
+  modalEditarTel.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+
+    var id = button.getAttribute('data-id');
+    var numero = button.getAttribute('data-numero');
+    var idtecnico = button.getAttribute('data-idtecnico');
+
+    document.getElementById('editTelTecId').value = id;
+    document.getElementById('editTelTecNumero').value = numero;
+
+    var selectTecnico = document.getElementById('editTelTecTecnico');
+    for (var i = 0; i < selectTecnico.options.length; i++) {
+      if (selectTecnico.options[i].value == idtecnico) {
+        selectTecnico.selectedIndex = i;
+        break;
+      }
+    }
+  });
+</script>
+<script>
+  // Pasar datos al modal de editar
+  var modalEditar = document.getElementById('modalEditarProcesador');
+  modalEditar.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+
+    var id = button.getAttribute('data-id');
+    var marca = button.getAttribute('data-marca');
+    var modelo = button.getAttribute('data-modelo');
+    var frecuencia = button.getAttribute('data-frecuencia');
+    var nucleos = button.getAttribute('data-nucleos');
+    var plataforma = button.getAttribute('data-plataforma');
+
+    document.getElementById('editar_id').value = id;
+    document.getElementById('editar_marca').value = marca;
+    document.getElementById('editar_modelo').value = modelo;
+    document.getElementById('editar_frecuencia').value = frecuencia;
+    document.getElementById('editar_nucleos').value = nucleos;
+    document.getElementById('editar_plataforma').value = plataforma;
+  });
+</script>
+<script>
+// Pasar datos al modal Editar SO
+var modalEditarBoard = document.getElementById('modalEditarBoard');
+modalEditarBoard.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget;
+  var id = button.getAttribute('data-idboa');
+  var tarjetamadre = button.getAttribute('data-tarjetamadre');
+  var chipset = button.getAttribute('data-chipset');
+
+  modalEditarBoard.querySelector('#editidboa').value = id;
+  modalEditarBoard.querySelector('#editar_tarjetamadre').value = tarjetamadre;
+  modalEditarBoard.querySelector('#editar_chipset').value = chipset;
+});
+</script>
 <script>
   $(document).ready(function () {
     $('#tablaAlmacenamiento').DataTable({
@@ -1337,6 +2776,48 @@ modalEditar.addEventListener('show.bs.modal', function (event) {
       }
     });    
     $('#ususuarios').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#ususuariodominio').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#tectecnicos').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#tecteletecnicos').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#sosistemaoperativo').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#procprocesador').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#procbajaprocesador').DataTable({
       "pageLength": 5,
       "lengthMenu": [5, 10, 25, 50, 75, 100],
       "language": {

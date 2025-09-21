@@ -7,6 +7,7 @@ import base64
 import cbor2
 import os
 from adminuser import adminuser_bp
+from caracequipos import caracequipos_bp
 from inv import inv_bp
 from huella import huella_bp
 from invequip import invequip_bp
@@ -16,6 +17,7 @@ from cryptography.exceptions import InvalidSignature
 import struct
 import json
 from werkzeug.security import check_password_hash
+import base64
 app = Flask(__name__)
 app.secret_key = "3016898140"  
 
@@ -245,6 +247,9 @@ def login():
     return render_template("login.html")
 
 
+@app.template_filter("b64encode")
+def b64encode_filter(data):
+    return base64.b64encode(data).decode("utf-8") if data else ""
 # ----------------- HOME -------------------
 @app.route("/home")
 def home():
@@ -256,6 +261,8 @@ def home():
                            usuario=session["usuario"], 
                            rol=session["rol"],
                            rol_id=session["rol_id"])
+
+
 
 # ----------------- LOGOUT -------------------
 @app.route("/logout")
@@ -288,6 +295,9 @@ app.register_blueprint(inv_bp)
 app.register_blueprint(huella_bp)
 app.register_blueprint(adminuser_bp)
 app.register_blueprint(invequip_bp)
+app.register_blueprint(caracequipos_bp)
+
+
 
 
 if __name__ == "__main__":

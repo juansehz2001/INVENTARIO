@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, session, redirect, url_for, flash, request
+from flask import Blueprint, render_template, session, redirect, url_for, flash, request,jsonify
 from conexion import get_connection
 import psycopg2
 from psycopg2 import sql
 from datetime import date
+import base64
 
 invequip_bp = Blueprint("invequip", __name__, template_folder="templates")
 
@@ -34,7 +35,7 @@ def inventario_equipos():
  # === Consulta usuarios con área, cargo y teléfono ===
     cur.execute("""
         SELECT u.id, u.cc, u.nombre, u.email, u.baja, 
-               a.area, c.descripcion, t.numero
+               a.area, c.descripcion, t.numero,a.id,c.id
         FROM usuario u
         INNER JOIN cargo c ON u.idcargo = c.id
         INNER JOIN area a ON u.idarea = a.id
@@ -57,10 +58,17 @@ def inventario_equipos():
     cur.execute("""
         SELECT b.id, b.idregistro,b.tabla, b.descripcion, b.fechabaja, b.fecharegistro
         FROM baja b
-        WHERE b.tabla = 'usuario'
+        WHERE b.tabla = 'almacenamiento'
         ORDER BY b.id DESC;
     """)
     bajas = cur.fetchall()
+    cur.execute("""
+        SELECT b.id, b.idregistro,b.tabla, b.descripcion, b.fechabaja, b.fecharegistro
+        FROM baja b
+        WHERE b.tabla = 'board'
+        ORDER BY b.id DESC;
+    """)
+    bajasboard = cur.fetchall()
      # Consulta general ubicaciones (equipos + join ubicaciones)
     cur.execute("""
         select eq.id,eq.codigo,s.sede ,p.piso ,o.oficina_salon from equipo eq inner join sede s on s.id=eq.idsede
@@ -94,6 +102,70 @@ inner join oficina o on o.id=eq.idoficina
         ORDER BY t.id;
     """)
     telefonos = cur.fetchall()
+       # === Consulta usuarios dominio ===
+    cur.execute("SELECT id, nombre FROM usuariodominio ORDER BY id;")
+    usuarios_dominio = cur.fetchall()
+    # === Técnicos con teléfonos ===
+    cur.execute("""
+        SELECT t.id,
+       t.cc_nit,
+       t.nombre,
+       t.fecharegistro,
+       STRING_AGG(tt.numero, ', ') AS telefonos
+FROM tecnicos t
+LEFT JOIN teletec tt ON t.id = tt.idtecnicos
+GROUP BY t.id, t.cc_nit, t.nombre, t.fecharegistro
+ORDER BY t.id;
+    """)
+    tecnicos = cur.fetchall()
+
+    # === Técnicos solos (para combos/modales) ===
+    cur.execute("SELECT id, cc_nit, nombre FROM tecnicos ORDER BY id;")
+    tecnicos_list = cur.fetchall()
+
+    # === Teléfonos técnicos (por separado si quieres CRUD directo) ===
+    cur.execute("""
+        SELECT tt.id, tt.numero, t.id AS idtecnico, t.nombre
+    FROM teletec tt
+    LEFT JOIN tecnicos t ON t.id = tt.idtecnicos
+    ORDER BY tt.id;
+    """)
+    teletec = cur.fetchall()
+    # sistema operativo
+    cur.execute("""
+        select id,descripcion,arquitectura from sistemaopera order by id;
+    """)
+    sistemaoperas  = cur.fetchall()
+     # sistema operativo
+    cur.execute("""
+         select id,marca,modelo,frecuencia,nucleos,plataforma,baja from procesador
+         where baja = false order by id;
+    """)
+    procesador  = cur.fetchall()
+    cur.execute("""
+        SELECT b.id, b.idregistro,b.tabla, b.descripcion, b.fechabaja, b.fecharegistro
+        FROM baja b
+        WHERE b.tabla = 'procesador'
+        ORDER BY b.id DESC;
+    """)
+    bajasprocesador = cur.fetchall()
+    cur.execute("""
+         select id,tarjetamadre,chipset,baja from board
+         where baja = false order by id;
+    """)
+    board  = cur.fetchall()
+    cur.execute("""select gp.id,g.id,g.tipo,g.capacidad,g.marca,g.chipset from grafica g left join graficapc gp on gp.idgrafica=g.id where gp.baja=false order by gp.id;""")
+    graficapc  = cur.fetchall()
+    cur.execute("""select id,tipo,capacidad,marca,chipset from grafica order by id;""")
+    grafica  = cur.fetchall()
+    cur.execute("""
+                 SELECT b.id, b.idregistro,b.tabla, b.descripcion, b.fechabaja, b.fecharegistro
+        FROM baja b
+        WHERE b.tabla = 'graficapc'
+        ORDER BY b.id DESC;
+    """)
+    graficabaja  = cur.fetchall()
+   
 
     cur.close()
     conn.close()
@@ -114,7 +186,19 @@ inner join oficina o on o.id=eq.idoficina
                            areas=areas,
                            cargos=cargos,
                            telefonos=telefonos,
-                           bajas_usuarios=bajas_usuarios)
+                           bajas_usuarios=bajas_usuarios,
+                           usuarios_dominio=usuarios_dominio,
+                           tecnicos=tecnicos,
+                           tecnicos_list=tecnicos_list,
+                           teletec=teletec,
+                           sistemaoperas =sistemaoperas,
+                           procesador =procesador,
+                           bajasprocesador =bajasprocesador,
+                           bajasboard =bajasboard,
+                           grafica=grafica,
+                           graficapc=graficapc,
+                           graficabaja=graficabaja,
+                           board =board)
 
 
 # Ejecutar sp_baja_almacenamiento
@@ -655,3 +739,766 @@ def crear_usuario():
         conn.close()
 
     return redirect(url_for("invequip.inventario_equipos", seccion="usuarios"))
+
+
+# =========================
+# CRUD USUARIOS DOMINIO
+# =========================
+
+@invequip_bp.route("/agregar_usuario_dominio", methods=["POST"])
+def agregar_usuario_dominio():
+    nombre = request.form.get("nombre")
+    if not nombre:
+        flash("El nombre es obligatorio", "danger")
+        return redirect(url_for("invequip.inventario_equipos"))
+    
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO usuariodominio (nombre) VALUES (%s)", (nombre,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("Usuario de dominio agregado correctamente", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="usuariodominio"))
+
+
+@invequip_bp.route("/editar_usuario_dominio", methods=["POST"])
+def editar_usuario_dominio():
+    id_ud = request.form.get("id")
+    nombre = request.form.get("nombre")
+
+    print("DEBUG >>> id:", id_ud, "nombre:", nombre)  # 👈 agrega esto
+
+    if not id_ud or not nombre:
+        flash("Datos incompletos", "danger")
+        return redirect(url_for("invequip.inventario_equipos", seccion="usuariodominio"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE usuariodominio SET nombre = %s WHERE id = %s", (nombre, id_ud))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("Usuario de dominio actualizado correctamente", "warning")
+    return redirect(url_for("invequip.inventario_equipos", seccion="usuariodominio"))
+
+
+@invequip_bp.route("/eliminar_usuario_dominio", methods=["POST"])
+def eliminar_usuario_dominio():
+    id_ud = request.form.get("id")
+
+    if not id_ud:
+        flash("ID inválido", "danger")
+        return redirect(url_for("invequip.inventario_equipos", seccion="usuariodominio"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        # Verificar si el usuario existe
+        cur.execute("SELECT 1 FROM usuariodominio WHERE id = %s", (id_ud,))
+        if not cur.fetchone():
+            flash("El usuario de dominio no existe", "warning")
+            return redirect(url_for("invequip.inventario_equipos", seccion="usuariodominio"))
+
+        # Verificar si está referenciado en caracteristicasequipo
+        cur.execute("SELECT COUNT(*) FROM caracteristicasequipo WHERE idusuariodominio = %s", (id_ud,))
+        count = cur.fetchone()[0]
+        if count > 0:
+            flash("No se puede eliminar: el usuario está vinculado a características de equipo", "danger")
+            return redirect(url_for("invequip.inventario_equipos", seccion="usuariodominio"))
+
+        # Eliminar si no está referenciado
+        cur.execute("DELETE FROM usuariodominio WHERE id = %s", (id_ud,))
+        conn.commit()
+        flash("Usuario de dominio eliminado correctamente", "success")
+
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al eliminar: {e}", "danger")
+
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos", seccion="usuariodominio"))
+
+# ➕ Agregar Técnico
+@invequip_bp.route("/agregar_tecnico", methods=["POST"])
+def agregar_tecnico():
+    cc_nit = request.form["cc_nit"]
+    nombre = request.form["nombre"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO tecnicos (cc_nit, nombre) VALUES (%s, %s)", (cc_nit, nombre))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✅ Técnico agregado correctamente", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="tecnicos"))
+
+
+# ✏️ Editar Técnico
+@invequip_bp.route("/editar_tecnico", methods=["POST"])
+def editar_tecnico():
+    id_tecnico = request.form["id"]
+    cc_nit = request.form["cc_nit"]
+    nombre = request.form["nombre"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE tecnicos SET cc_nit=%s, nombre=%s WHERE id=%s", (cc_nit, nombre, id_tecnico))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✏️ Técnico actualizado correctamente", "warning")
+    return redirect(url_for("invequip.inventario_equipos",seccion="tecnicos"))
+
+
+# 🗑️ Eliminar Técnico
+@invequip_bp.route("/eliminar_tecnico", methods=["POST"])
+def eliminar_tecnico():
+    id_tecnico = request.form["id"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # 🔎 Verificar si el técnico está en mantenimientos
+    cur.execute("SELECT 1 FROM mantenimientoobservacionesugerencias WHERE idtecnico = %s LIMIT 1", (id_tecnico,))
+    existe = cur.fetchone()
+
+    if existe:
+        cur.close()
+        conn.close()
+        flash("⚠️ No se puede eliminar: el técnico está asignado a mantenimientos.", "warning")
+        return redirect(url_for("invequip.inventario_equipos", seccion="tecnicos"))
+
+    # 🗑️ Si no tiene mantenimientos, borramos dependencias
+    cur.execute("DELETE FROM teletec WHERE idtecnicos = %s", (id_tecnico,))
+    cur.execute("DELETE FROM tecnicos WHERE id = %s", (id_tecnico,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("🗑️ Técnico eliminado correctamente", "danger")
+    return redirect(url_for("invequip.inventario_equipos", seccion="tecnicos"))
+
+# ➕ Agregar Teléfono Técnico
+@invequip_bp.route("/agregar_telefono_tecnico", methods=["POST"])
+def agregar_telefono_tecnico():
+    idtecnico = request.form["idtecnico"]
+    numero = request.form["numero"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO teletec (idtecnicos, numero) VALUES (%s, %s)", (idtecnico, numero))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✅ Teléfono de técnico agregado correctamente", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="tecnicos"))
+
+
+@invequip_bp.route("/editar_telefono_tecnico", methods=["POST"])
+def editar_telefono_tecnico():
+    id_tel = request.form["id"]
+    numero = request.form["numero"]
+    idtecnico = request.form["idtecnico"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE teletec SET numero=%s, idtecnicos=%s WHERE id=%s",
+                (numero, idtecnico, id_tel))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✏️ Teléfono de técnico actualizado correctamente", "warning")
+    return redirect(url_for("invequip.inventario_equipos", seccion="tecnicos"))
+
+
+
+# 🗑️ Eliminar Teléfono Técnico
+@invequip_bp.route("/eliminar_telefono_tecnico", methods=["POST"])
+def eliminar_telefono_tecnico():
+    id_tel = request.form["id"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM teletec WHERE id = %s", (id_tel,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("🗑️ Teléfono de técnico eliminado correctamente", "danger")
+    return redirect(url_for("invequip.inventario_equipos",seccion="tecnicos"))
+
+@invequip_bp.route("/agregar_so", methods=["POST"])
+def agregar_so():
+    descripcion = request.form["descripcion"]
+    arquitectura = request.form["arquitectura"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO sistemaopera (descripcion, arquitectura) VALUES (%s, %s)",
+                (descripcion, arquitectura))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for("invequip.inventario_equipos", seccion="so"))
+
+
+@invequip_bp.route("/editar_so", methods=["POST"])
+def editar_so():
+    id_so = request.form["id"]
+    descripcion = request.form["descripcion"]
+    arquitectura = request.form["arquitectura"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE sistemaopera SET descripcion=%s, arquitectura=%s WHERE id=%s",
+                (descripcion, arquitectura, id_so))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for("invequip.inventario_equipos", seccion="so"))
+
+
+@invequip_bp.route("/eliminar_so", methods=["POST"])
+def eliminar_so():
+    id_so = request.form.get("id")
+
+    if not id_so:
+        flash("ID inválido", "danger")
+        return redirect(url_for("invequip.inventario_equipos", seccion="so"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        # Verificar si el sistema operativo existe
+        cur.execute("SELECT 1 FROM sistemaopera WHERE id = %s", (id_so,))
+        if not cur.fetchone():
+            flash("El sistema operativo no existe", "warning")
+            return redirect(url_for("invequip.inventario_equipos", seccion="so"))
+
+        # Verificar si está referenciado en caracteristicasequipo
+        cur.execute("SELECT COUNT(*) FROM caracteristicasequipo WHERE idsistemaoperativo = %s", (id_so,))
+        count = cur.fetchone()[0]
+        if count > 0:
+            flash("No se puede eliminar: el sistema operativo está vinculado a características de equipo", "danger")
+            return redirect(url_for("invequip.inventario_equipos", seccion="so"))
+
+        # Eliminar si no está referenciado
+        cur.execute("DELETE FROM sistemaopera WHERE id = %s", (id_so,))
+        conn.commit()
+        flash("Sistema operativo eliminado correctamente", "success")
+
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al eliminar: {e}", "danger")
+
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos", seccion="so"))
+# ======================
+# CRUD PROCESADOR
+# ======================
+
+@invequip_bp.route("/agregar_procesador", methods=["POST"])
+def agregar_procesador():
+    if "usuario" not in session:
+        flash("Debes iniciar sesión primero", "warning")
+        return redirect(url_for("home"))
+
+    marca = request.form["marca"]
+    modelo = request.form["modelo"]
+    frecuencia = request.form["frecuencia"]
+    nucleos = request.form["nucleos"]
+    plataforma = request.form["plataforma"]
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO procesador (marca, modelo, frecuencia, nucleos, plataforma)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (marca, modelo, frecuencia, nucleos, plataforma))
+        conn.commit()
+        flash("Procesador agregado exitosamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al agregar procesador: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="procesador"))
+
+
+@invequip_bp.route("/editar_procesador", methods=["POST"])
+def editar_procesador():
+    if "usuario" not in session:
+        flash("Debes iniciar sesión primero", "warning")
+        return redirect(url_for("home"))
+
+    id_proc = request.form["id"]
+    marca = request.form["marca"]
+    modelo = request.form["modelo"]
+    frecuencia = request.form["frecuencia"]
+    nucleos = request.form["nucleos"]
+    plataforma = request.form["plataforma"]
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE procesador
+            SET marca = %s, modelo = %s, frecuencia = %s, nucleos = %s, plataforma = %s
+            WHERE id = %s
+        """, (marca, modelo, frecuencia, nucleos, plataforma, id_proc))
+        conn.commit()
+        flash("Procesador actualizado correctamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al editar procesador: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="procesador"))
+
+@invequip_bp.route("/baja_procesador/<int:id>", methods=["POST"])
+def baja_procesador(id):
+    descripcion = request.form.get("descripcion")
+    fecha_baja = request.form.get("fecha_baja")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL sp_baja_procesador(%s, %s, %s)", (id, descripcion, fecha_baja))
+        conn.commit()
+        flash(f"Registro {id} dado de baja correctamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="procesador"))
+
+@invequip_bp.route("/revertir_baja_procesador/<int:id>", methods=["POST"])
+def revertir_baja_procesador(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL sp_revertir_baja_procesador(%s)", (id,))
+        conn.commit()
+        flash(f"Baja revertida para {id}", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="procesador"))
+
+
+# ======================
+# CRUD BOARD
+# ======================
+
+@invequip_bp.route("/agregar_board", methods=["POST"])
+def agregar_board():
+    if "usuario" not in session:
+        flash("Debes iniciar sesión primero", "warning")
+        return redirect(url_for("home"))
+
+    tarjetamadre = request.form["tarjetamadre"]
+    chipset = request.form["chipset"]
+
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO board (tarjetamadre, chipset)
+            VALUES (%s, %s)
+        """, (tarjetamadre, chipset))
+        conn.commit()
+        flash("board agregado exitosamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al agregar board: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="board"))
+
+
+@invequip_bp.route("/editar_board", methods=["POST"])
+def editar_board():
+    if "usuario" not in session:
+        flash("Debes iniciar sesión primero", "warning")
+        return redirect(url_for("home"))
+
+    id_board = request.form["id"]
+    tarjetamadre = request.form["tarjetamadre"]
+    chipset = request.form["chipset"]
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE board
+            SET tarjetamadre = %s, chipset = %s
+            WHERE id = %s
+        """, (tarjetamadre, chipset, id_board))
+        conn.commit()
+        flash("board actualizado correctamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al editar board: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="board"))
+
+@invequip_bp.route("/baja_board/<int:id>", methods=["POST"])
+def baja_board(id):
+    descripcion = request.form.get("descripcion")
+    fecha_baja = request.form.get("fecha_baja")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL sp_baja_board(%s, %s, %s)", (id, descripcion, fecha_baja))
+        conn.commit()
+        flash(f"Registro {id} dado de baja correctamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="board"))
+
+@invequip_bp.route("/revertir_baja_board/<int:id>", methods=["POST"])
+def revertir_baja_board(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL sp_revertir_baja_board(%s)", (id,))
+        conn.commit()
+        flash(f"Baja revertida para {id}", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="board"))
+
+
+# ==============================
+#   API EQUIPOS (FUNCIONALES / BAJA)
+# ==============================
+@invequip_bp.route("/api/equipos")
+def api_equipos():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+
+    estado = request.args.get("estado", "funcionales")
+    search = request.args.get("search", "").strip().lower()
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 2))
+
+    if per_page not in [2, 4, 8, 16, 32, 64]:
+        per_page = 2
+
+    offset = (page - 1) * per_page
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    base_query = """
+        SELECT eq.id, eq.codigo, eq.tipo, eq.marca, eq.modelo, eq.serial,
+               eq.fechacompra, eq.estado, eq.foto, eq.fecharegistro,
+               s.sede, o.oficina_salon, p.piso, u.nombre
+        FROM equipo eq
+        LEFT JOIN sede s ON s.id = eq.idsede
+        LEFT JOIN oficina o ON o.id = eq.idoficina
+        LEFT JOIN piso p ON p.id = eq.idpiso
+        LEFT JOIN usuario u ON u.id = eq.idusuario
+        WHERE eq.baja = %s
+    """
+
+    params = [False if estado == "funcionales" else True]
+
+    if search:
+        base_query += """ 
+            AND (LOWER(eq.codigo) LIKE %s OR LOWER(eq.tipo) LIKE %s OR LOWER(eq.marca) LIKE %s 
+                 OR LOWER(eq.modelo) LIKE %s OR LOWER(eq.serial) LIKE %s 
+                 OR LOWER(s.sede) LIKE %s OR LOWER(o.oficina_salon) LIKE %s
+                 OR LOWER(p.piso) LIKE %s OR LOWER(u.nombre) LIKE %s)
+        """
+        like_search = f"%{search}%"
+        params.extend([like_search] * 9)
+
+    count_query = f"SELECT COUNT(*) FROM ({base_query}) AS subq"
+    cur.execute(count_query, tuple(params))
+    total = cur.fetchone()[0]
+
+    base_query += " ORDER BY eq.id DESC LIMIT %s OFFSET %s"
+    params.extend([per_page, offset])
+
+    cur.execute(base_query, tuple(params))
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    equipos = []
+    for r in rows:
+        foto_base64 = None
+        if r[8]:
+            foto_base64 = base64.b64encode(r[8]).decode("utf-8")
+
+        equipos.append({
+            "id": r[0],
+            "codigo": r[1],
+            "tipo": r[2],
+            "marca": r[3],
+            "modelo": r[4],
+            "serial": r[5],
+            "fechacompra": r[6].strftime("%Y-%m-%d") if r[6] else None,
+            "estado": r[7],
+            "foto": foto_base64, 
+            "fecharegistro": r[9].strftime("%Y-%m-%d %H:%M:%S") if r[9] else None,
+            "sede": r[10]if r[10] else "No asignado",
+            "oficina": r[11]if r[11] else "No asignado",
+            "piso": r[12]if r[12] else "No asignado",
+            "usuario": r[13]if r[13] else "No asignado"
+        })
+
+    return jsonify({
+        "equipos": equipos,
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "pages": (total // per_page) + (1 if total % per_page else 0)
+    })
+@invequip_bp.route("/agregar_equipo", methods=["POST"])
+def agregar_equipo():
+    if "usuario" not in session:
+        flash("Debes iniciar sesión primero", "warning")
+        return redirect(url_for("home"))
+
+    data = request.form
+    foto = request.files.get("foto")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        # === 1. Insert en equipo ===
+        cur.execute("""
+            INSERT INTO equipo (
+                codigo, tipo, marca, modelo, serial, fechacompra, estado, 
+                idsede, idoficina, idpiso, idusuario, foto
+            )
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            RETURNING id
+        """, (
+            data.get("codigo"),
+            data.get("tipo"),
+            data.get("marca"),
+            data.get("modelo"),
+            data.get("serial"),
+            data.get("fechacompra") or None,
+            data.get("estado"),
+            data.get("idsede"),
+            data.get("idoficina"),
+            data.get("idpiso"),
+            data.get("idusuario") or None,
+            psycopg2.Binary(foto.read()) if foto else None
+        ))
+        id_equipo = cur.fetchone()[0]
+
+        # === 2. Insert en caracteristicasequipo ===
+        cur.execute("""
+            INSERT INTO caracteristicasequipo (
+                idequipo, direccionmac, ip, observaciones, nombreequipo, sockets, frecuenciaram, 
+                idusuariodominio, anidesk, idboard, idsistemaoperativo, idprocesador
+            )
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        """, (
+            id_equipo,
+            data.get("direccionmac"),
+            data.get("ip"),
+            data.get("observaciones"),
+            data.get("nombreequipo"),
+            data.get("sockets") or None,
+            data.get("frecuenciaram") or None,
+            data.get("idusuariodominio") or None,
+            data.get("anidesk"),
+            data.get("idboard") or None,
+            data.get("idsistemaoperativo") or None,
+            data.get("idprocesador") or None
+        ))
+
+        conn.commit()
+        flash("✅ Equipo agregado correctamente", "success")
+
+    except Exception as e:
+        conn.rollback()
+        flash(f"❌ Error al agregar equipo: {str(e)}", "danger")
+
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos"))
+
+@invequip_bp.route("/api/revertir_baja/<int:id>", methods=["POST"])
+def revertir_baja(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("CALL sp_revertir_baja_equipo(%s)", (id,))
+            conn.commit()
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+    
+
+# Ejecutar grafica_baja
+@invequip_bp.route("/grafica/baja/<int:id>", methods=["POST"])
+def baja_grafica(id):
+    fecha_baja = request.form.get("fecha_baja")
+    descripcion = request.form.get("descripcion")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL registrar_baja_grafica(%s, %s, %s)", (id, fecha_baja, descripcion))
+        conn.commit()
+        flash(f"Registro {id} dado de baja correctamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="grafica"))
+
+
+# Ejecutar sp_revertir_baja_grafica
+@invequip_bp.route("/grafica/revertir/<int:id>", methods=["POST"])
+def revertir_baja_grafica(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL revertir_baja_grafica(%s)", (id,))
+        conn.commit()
+        flash(f"Baja revertida para {id}", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="grafica"))
+# =========================
+# NUEVA grafica
+# =========================
+@invequip_bp.route("/grafica/nueva_grafica", methods=["POST"])
+def nueva_grafica():
+    capacidad = request.form.get("capacidad")
+    tipo = request.form.get("tipo")
+    marca = request.form.get("marca")
+    chipset = request.form.get("chipset")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("insert into grafica (tipo,capacidad,marca,chipset) values (%s,%s,%s,%s)", (tipo,capacidad,marca,chipset))
+        conn.commit()
+        flash("grafica registrada correctamente ✅", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al registrar grafica: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="grafica"))
+
+
+# =========================
+# NUEVO ALMACENAMIENTO
+# =========================
+@invequip_bp.route("/graficapc/nuevo", methods=["POST"])
+def nuevo_graficapc():
+    id_grafica = request.form.get("id_grafica")
+    id_equipo = None
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "insert into graficapc (idgrafica,idequipo) values (%s, %s)",
+            (id_grafica, id_equipo),
+        )
+        conn.commit()
+        flash("graficapc registrado correctamente ✅", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al registrar graficapc: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="grafica"))
+# =========================
+# ACTUALIZAR ALMACENAMIENTO
+# =========================
+@invequip_bp.route("/grafica/actualizar/<int:id>", methods=["POST"])
+def actualizar_grafica(id):
+    id_graficapc = request.form.get("id_graficapc")or None
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            UPDATE graficapc 
+            SET idgrafica = %s
+            WHERE id = %s
+        """, (id_graficapc, id))
+        conn.commit()
+        flash(f"Registro {id} actualizado correctamente ✅", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al actualizar: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="grafica"))
