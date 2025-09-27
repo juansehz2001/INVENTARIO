@@ -165,7 +165,89 @@ ORDER BY t.id;
         ORDER BY b.id DESC;
     """)
     graficabaja  = cur.fetchall()
-   
+    cur.execute("""
+        SELECT l.id, l.nombresoftware, l.fechacompra, l.fechaexpiracion, 
+               l.clavelicencia, l.idequipo, e.codigo
+        FROM licenciasequipo l
+        LEFT JOIN equipo e ON e.id = l.idequipo
+        ORDER BY l.id DESC;
+    """)
+    licencias = cur.fetchall()
+    cur.execute("""
+        SELECT m.id, m.idequipo, e.codigo, m.fecharealizado, m.fechaincripcion,
+               m.tipo, m.descripcion, t.nombre AS tecnico
+        FROM mantenimientoobservacionesugerencias m
+        LEFT JOIN equipo e ON e.id = m.idequipo
+        LEFT JOIN tecnicos t ON t.id = m.idtecnico
+        ORDER BY m.fecharealizado DESC;
+    """)
+    mantenimientos = cur.fetchall()
+      # === Memorias ===
+    cur.execute("""
+        SELECT m.id, m.marca, m.idequipo, m.baja, 
+               r.id AS idmemoriaram, r.tipo, r.capacidad, r.frecuencia
+        FROM memoria m
+        LEFT JOIN memoriaram r ON m.idmemoriaram = r.id
+        WHERE m.baja = false
+        ORDER BY m.id;
+    """)
+    memorias = cur.fetchall()
+
+    cur.execute("SELECT id, tipo, capacidad, frecuencia FROM memoriaram ORDER BY id;")
+    memoriasram = cur.fetchall()
+
+    cur.execute("""
+        SELECT b.id, b.idregistro, b.tabla, b.descripcion, 
+               b.fechabaja, b.fecharegistro
+        FROM baja b
+        WHERE b.tabla = 'memoria'
+        ORDER BY b.id DESC;
+    """)
+    bajas_memoria = cur.fetchall()
+    cur.execute("""
+        SELECT p.id,mp.marca,p.pulgadas,p.voltaje,p.amperaje,p.serial,p.idequipo,p.baja,
+               mp.id
+        FROM pantalla p
+        LEFT JOIN marcapantalla mp ON mp.id = p.idmarcapantalla
+        WHERE p.baja = false
+        ORDER BY p.id;
+    """)
+    pantalla = cur.fetchall()
+
+    cur.execute("SELECT id, marca FROM marcapantalla ORDER BY id;")
+    tipopantalla = cur.fetchall()
+
+    cur.execute("""
+        SELECT b.id, b.idregistro, b.tabla, b.descripcion, 
+               b.fechabaja, b.fecharegistro
+        FROM baja b
+        WHERE b.tabla = 'pantalla'
+        ORDER BY b.id DESC;
+    """)
+    bajas_pantalla = cur.fetchall()
+    cur.execute("""
+        SELECT p.id, m.marcas, p.modelo, p.serial, p.descripcion,
+               e.codigo, p.idequipo
+        FROM perisfericos p
+        LEFT JOIN marcaperis m ON p.idmarca = m.id
+        LEFT JOIN equipo e ON p.idequipo = e.id
+        WHERE p.baja = FALSE
+        ORDER BY p.id DESC
+    """)
+    perisfericos = cur.fetchall()
+
+    # Traer marcas
+    cur.execute("SELECT id, marcas FROM marcaperis ORDER BY marcas ASC")
+    marcaperis = cur.fetchall()
+
+    # Traer bajas
+    cur.execute("""
+        SELECT id, idregistro, tabla, descripcion, fechabaja, fecharegistro
+        FROM baja
+        WHERE tabla = 'perisfericos'
+        ORDER BY fechabaja DESC
+    """)
+    bajas_perisfericos = cur.fetchall()
 
     cur.close()
     conn.close()
@@ -198,7 +280,19 @@ ORDER BY t.id;
                            grafica=grafica,
                            graficapc=graficapc,
                            graficabaja=graficabaja,
-                           board =board)
+                           licencias=licencias,
+                           board =board,
+                           mantenimientos=mantenimientos,
+                           memorias=memorias,
+                           memoriasram=memoriasram,
+                           bajas_memoria=bajas_memoria,
+                           pantalla=pantalla,
+                           tipopantalla=tipopantalla,
+                           perisfericos=perisfericos,
+                           marcaperis=marcaperis,
+                           bajas_perisfericos=bajas_perisfericos,
+                           bajas_pantalla=bajas_pantalla,
+                           date=date)
 
 
 # Ejecutar sp_baja_almacenamiento
@@ -1502,3 +1596,591 @@ def actualizar_grafica(id):
         conn.close()
 
     return redirect(url_for("invequip.inventario_equipos",seccion="grafica"))
+@invequip_bp.route("/licencias/agregar", methods=["POST"])
+def agregar_licencia():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO licenciasequipo (nombresoftware, fechacompra, fechaexpiracion, clavelicencia, idequipo)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (
+        request.form["nombresoftware"],
+        request.form["fechacompra"],
+        request.form["fechaexpiracion"],
+        request.form["clavelicencia"],
+        request.form.get("idequipo") if request.form.get("idequipo") else None
+    ))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("Licencia agregada correctamente", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="licencias"))
+
+@invequip_bp.route("/licencias/editar/<int:id>", methods=["POST"])
+def editar_licencia(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE licenciasequipo
+        SET nombresoftware=%s, fechacompra=%s, fechaexpiracion=%s, clavelicencia=%s, idequipo=%s
+        WHERE id=%s
+    """, (
+        request.form["nombresoftware"],
+        request.form["fechacompra"],
+        request.form["fechaexpiracion"],
+        request.form["clavelicencia"],
+        request.form.get("idequipo") if request.form.get("idequipo") else None,
+        id
+    ))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("Licencia actualizada correctamente", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="licencias"))
+
+@invequip_bp.route("/licencias/eliminar/<int:id>", methods=["POST"])
+def eliminar_licencia(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM licenciasequipo WHERE id=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("Licencia eliminada correctamente", "danger")
+    return redirect(url_for("invequip.inventario_equipos",seccion="licencias"))
+
+@invequip_bp.route("/mantenimientos/add", methods=["POST"])
+def add_mantenimiento():
+    data = request.json
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO mantenimientoobservacionesugerencias
+            (idequipo, fecharealizado, fechaincripcion, tipo, descripcion, idtecnico)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        RETURNING id
+    """, (
+        data.get("idequipo"),
+        data.get("fecharealizado"),
+        data.get("fechaincripcion"),
+        data.get("tipo"),
+        data.get("descripcion"),
+        data.get("idtecnico"),
+    ))
+    new_id = cur.fetchone()[0]
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for("invequip.inventario_equipos",seccion="mantenimientos"))
+@invequip_bp.route("/mantenimientos/update/<int:id>", methods=["PUT"])
+def update_mantenimiento(id):
+    data = request.json
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE mantenimientoobservacionesugerencias
+        SET idequipo=%s, fecharealizado=%s, fechaincripcion=%s,
+            tipo=%s, descripcion=%s, idtecnico=%s
+        WHERE id=%s
+    """, (
+        data.get("idequipo"),
+        data.get("fecharealizado"),
+        data.get("fechaincripcion"),
+        data.get("tipo"),
+        data.get("descripcion"),
+        data.get("idtecnico"),
+        id
+    ))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for("invequip.inventario_equipos",seccion="mantenimientos"))
+@invequip_bp.route("/mantenimientos/delete/<int:id>", methods=["DELETE"])
+def delete_mantenimiento(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM mantenimientoobservacionesugerencias WHERE id=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for("invequip.inventario_equipos",seccion="mantenimientos"))
+# === Crear memoria ===
+@invequip_bp.route("/memoria/agregar", methods=["POST"])
+def agregar_memoria():
+    marca = request.form["marca"]
+    idmemoriaram = request.form["idmemoriaram"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO memoria (marca, idmemoriaram, idequipo) 
+        VALUES (%s, %s, NULL)
+    """, (marca, idmemoriaram))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("Memoria agregada con éxito", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+
+# === Editar memoria ===
+@invequip_bp.route("/memoria/editar/<int:id>", methods=["POST"])
+def editar_memoria(id):
+    idmemoriaram = request.form["idmemoriaram"]
+    marca = request.form["marca"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE memoria 
+        SET idmemoriaram=%s, marca=%s
+        WHERE id=%s
+    """, (idmemoriaram, marca, id))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("Memoria editada con éxito", "info")
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+
+# === Eliminar memoria ===
+@invequip_bp.route("/memoria/eliminar/<int:id>", methods=["POST"])
+def eliminar_memoria(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM memoria WHERE id=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("Memoria eliminada con éxito", "danger")
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+# ----- RUTAS CRUD PARA memoriaram -----
+@invequip_bp.route("/memoriaram/agregar", methods=["POST"])
+def agregar_memoriaram():
+    tipo = request.form.get("tipo", "").strip()
+    capacidad = request.form.get("capacidad", "0").strip()
+    frecuencia = request.form.get("frecuencia", "0").strip()
+
+    try:
+        capacidad = int(capacidad)
+        frecuencia = int(frecuencia)
+    except ValueError:
+        flash("Capacidad y frecuencia deben ser números enteros.", "warning")
+        return redirect(url_for("invequip.inventario_equipos"))
+
+    if not tipo:
+        flash("Debe indicar el tipo de memoria RAM.", "warning")
+        return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO memoriaram (tipo, capacidad, frecuencia) VALUES (%s, %s, %s)",
+            (tipo, capacidad, frecuencia),
+        )
+        conn.commit()
+        flash("Tipo de memoria RAM agregado.", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al agregar memoriaram: {str(e)}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+
+@invequip_bp.route("/memoriaram/editar/<int:id>", methods=["POST"])
+def editar_memoriaram(id):
+    tipo = request.form.get("tipo", "").strip()
+    capacidad = request.form.get("capacidad", "0").strip()
+    frecuencia = request.form.get("frecuencia", "0").strip()
+
+    try:
+        capacidad = int(capacidad)
+        frecuencia = int(frecuencia)
+    except ValueError:
+        flash("Capacidad y frecuencia deben ser números enteros.", "warning")
+        return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+    if not tipo:
+        flash("Debe indicar el tipo de memoria RAM.", "warning")
+        return redirect(url_for("invequip.inventario_equipos"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "UPDATE memoriaram SET tipo=%s, capacidad=%s, frecuencia=%s WHERE id=%s",
+            (tipo, capacidad, frecuencia, id),
+        )
+        conn.commit()
+        flash("Tipo de memoria RAM actualizado.", "info")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al editar memoriaram: {str(e)}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+
+@invequip_bp.route("/memoriaram/eliminar/<int:id>", methods=["POST"])
+def eliminar_memoriaram(id):
+    """
+    Estrategia: poner a NULL las referencias en 'memoria' y luego eliminar el registro de memoriaram.
+    Evita errores por FK y deja los equipos/memorias sin referencia si corresponde.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        # 1) Quitar referencias para evitar FK
+        cur.execute("UPDATE memoria SET idmemoriaram = NULL WHERE idmemoriaram = %s", (id,))
+        # 2) Eliminar el tipo
+        cur.execute("DELETE FROM memoriaram WHERE id = %s", (id,))
+        conn.commit()
+        flash("Tipo de memoria RAM eliminado. Referencias en 'memoria' puestas a NULL.", "danger")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al eliminar memoriaram: {str(e)}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+@invequip_bp.route("/memoriaram/baja/<int:id>", methods=["POST"])
+def baja_memoriaram(id):
+    descripcion = request.form.get("descripcion")
+    fecha_baja = request.form.get("fecha_baja")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL registrar_baja_memoria(%s, %s, %s)", (id , fecha_baja, descripcion))
+        conn.commit()
+        flash(f"Registro {id} dado de baja correctamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+# Ejecutar sp_revertir_baja_almacenamiento
+@invequip_bp.route("/memoriaram/revertir/<int:id>", methods=["POST"])
+def revertir_baja_memoriaram(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL revertir_baja_memoria(%s)", (id,))
+        conn.commit()
+        flash(f"Baja revertida para {id}", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="ram"))
+
+
+@invequip_bp.route("/pantalla/agregar", methods=["POST"])
+def agregar_pantalla():
+    idpantalla = request.form["idpantalla"]
+    pulgadas = request.form["pulgadas"]
+    voltaje = request.form["voltaje"]
+    amperaje = request.form["amperaje"]
+    serial = request.form["serial"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO pantalla (idmarcapantalla,pulgadas,voltaje,amperaje,serial, idequipo) 
+        VALUES (%s, %s,%s, %s,%s, NULL)
+    """, (idpantalla,pulgadas,voltaje,amperaje,serial))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("pantalla agregada con éxito", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="pantalla"))
+
+
+# === Editar memoria ===
+@invequip_bp.route("/pantalla/editar/<int:id>", methods=["POST"])
+def editar_pantalla(id):
+    idpantalla = request.form["idpantalla"]
+    pulgadas = request.form["pulgadas"]
+    voltaje = request.form["voltaje"]
+    amperaje = request.form["amperaje"]
+    serial = request.form["serial"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE pantalla 
+        SET idmarcapantalla=%s, pulgadas=%s,voltaje=%s,amperaje=%s,serial=%s
+        WHERE id=%s
+    """, (idpantalla,pulgadas,voltaje,amperaje,serial, id))
+    conn.commit()
+    cur.close()
+    conn.close()
+    flash("pantalla editada con éxito", "info")
+    return redirect(url_for("invequip.inventario_equipos",seccion="pantalla"))
+
+# ----- RUTAS CRUD PARA memoriaram -----
+@invequip_bp.route("/tipopantalla/agregar", methods=["POST"])
+def agregar_tipopantalla():
+    marca = request.form.get("marca", "").strip()
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO marcapantalla  (marca) VALUES (%s)",
+            (marca,),
+        )
+        conn.commit()
+        flash("Tipo de pantalla agregado.", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al agregar Tipo de pantalla: {str(e)}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="pantalla"))
+
+
+@invequip_bp.route("/tipopantalla/editar/<int:id>", methods=["POST"])
+def editar_tipopantalla(id):
+    marca = request.form.get("marca", "").strip()
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "UPDATE marcapantalla SET marca=%s WHERE id=%s",
+            (marca, id),
+        )
+        conn.commit()
+        flash("Tipo de pantalla RAM actualizado.", "info")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al editar Tipo de pantalla: {str(e)}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="pantalla"))
+
+
+@invequip_bp.route("/tipopantalla/eliminar/<int:id>", methods=["POST"])
+def eliminar_tipopantalla(id):
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        # 1) Quitar referencias para evitar FK
+        cur.execute("UPDATE pantalla SET idmarcapantalla = NULL WHERE idmarcapantalla = %s", (id,))
+        # 2) Eliminar el tipo
+        cur.execute("DELETE FROM marcapantalla WHERE id = %s", (id,))
+        conn.commit()
+        flash("Tipo de marca pantalla eliminado. Referencias en 'pantalla' puestas a NULL.", "danger")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error al eliminar pantalla: {str(e)}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="pantalla"))
+
+@invequip_bp.route("/pantalla/baja/<int:id>", methods=["POST"])
+def baja_pantalla(id):
+    descripcion = request.form.get("descripcion")
+    fecha_baja = request.form.get("fecha_baja")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL registrar_baja_pantalla(%s, %s, %s)", (id , fecha_baja, descripcion))
+        conn.commit()
+        flash(f"Registro {id} dado de baja correctamente", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="pantalla"))
+
+# Ejecutar sp_revertir_baja_almacenamiento
+@invequip_bp.route("/pantalla/revertir/<int:id>", methods=["POST"])
+def revertir_baja_pantalla(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("CALL revertir_baja_pantalla(%s)", (id,))
+        conn.commit()
+        flash(f"Baja revertida para {id}", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}", "danger")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("invequip.inventario_equipos",seccion="pantalla"))
+@invequip_bp.route("/perisfericos/agregar", methods=["POST"])
+def agregar_perisferico():
+    modelo = request.form["modelo"]
+    serial = request.form["serial"]
+    descripcion = request.form["descripcion"]
+    idmarca = request.form["idmarca"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO perisfericos (modelo, serial, descripcion, idmarca)
+        VALUES (%s, %s, %s, %s)
+    """, (modelo, serial, descripcion, idmarca))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✅ Periférico agregado con éxito", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="perisfericos"))
+
+
+# =========================
+# 📌 EDITAR PERIFERICO
+# =========================
+@invequip_bp.route("/perisfericos/editar/<int:id>", methods=["POST"])
+def editar_perisferico(id):
+    modelo = request.form["modelo"]
+    serial = request.form["serial"]
+    descripcion = request.form["descripcion"]
+    idmarca = request.form["idmarca"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE perisfericos
+        SET modelo=%s, serial=%s, descripcion=%s, idmarca=%s
+        WHERE id=%s
+    """, (modelo, serial, descripcion, idmarca, id))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✏️ Periférico actualizado correctamente", "info")
+    return redirect(url_for("invequip.inventario_equipos",seccion="perisfericos"))
+
+
+# =========================
+# 📌 DAR DE BAJA PERIFERICO
+# =========================
+@invequip_bp.route("/perisfericos/baja/<int:id>", methods=["POST"])
+def baja_perisferico(id):
+    descripcion = request.form["descripcion"]
+    fecha_baja = request.form["fecha_baja"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Marcar como baja en perisfericos
+    cur.execute("UPDATE perisfericos SET baja = TRUE WHERE id = %s", (id,))
+
+    # Registrar en tabla bajas
+    cur.execute("""
+        INSERT INTO baja (idregistro, tabla, descripcion, fechabaja, fecharegistro)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (id, "perisfericos", descripcion, fecha_baja, date.today()))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("📉 Periférico dado de baja", "warning")
+    return redirect(url_for("invequip.inventario_equipos",seccion="perisfericos"))
+
+
+# =========================
+# 📌 REVERTIR BAJA
+# =========================
+@invequip_bp.route("/perisfericos/revertir_baja/<int:id>", methods=["POST"])
+def revertir_baja_perisferico(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Restaurar registro
+    cur.execute("UPDATE perisfericos SET baja = FALSE WHERE id = %s", (id,))
+    # Eliminar de la tabla bajas
+    cur.execute("DELETE FROM baja WHERE idregistro = %s AND tabla = 'perisfericos'", (id,))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("🔄 Baja revertida correctamente", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="perisfericos"))
+
+
+# =========================
+# 📌 AGREGAR MARCA
+# =========================
+@invequip_bp.route("/marcaperis/agregar", methods=["POST"])
+def agregar_marcaperis():
+    marcas = request.form["marcas"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO marcaperis (marcas) VALUES (%s)", (marcas,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✅ Marca agregada", "success")
+    return redirect(url_for("invequip.inventario_equipos",seccion="perisfericos"))
+
+
+# =========================
+# 📌 EDITAR MARCA
+# =========================
+@invequip_bp.route("/marcaperis/editar/<int:id>", methods=["POST"])
+def editar_marcaperis(id):
+    marcas = request.form["marcas"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE marcaperis SET marcas=%s WHERE id=%s", (marcas, id))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("✏️ Marca actualizada", "info")
+    return redirect(url_for("invequip.inventario_equipos",seccion="perisfericos"))
+
+
+# =========================
+# 📌 ELIMINAR MARCA
+# =========================
+@invequip_bp.route("/marcaperis/eliminar/<int:id>", methods=["POST"])
+def eliminar_marcaperis(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM marcaperis WHERE id=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("🗑️ Marca eliminada", "danger")
+    return redirect(url_for("invequip.inventario_equipos",seccion="perisfericos"))

@@ -1179,41 +1179,1171 @@
   </div>
 </div>
 
+<div id="licencias" class="seccion card-custom d-none">
+  <h3 class="mb-4">Licencias</h3>
 
+  <!-- Botón agregar -->
+  <button class="btn btn-primary btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarLicencia">
+    Agregar Licencia
+  </button>
 
+  <table id="licencia" class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Software</th>
+        <th>Fecha Compra</th>
+        <th>Fecha Expiración</th>
+        <th>Clave</th>
+        <th>Equipo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in licencias %}
+        {% set estado = "" %}
+        {% if l[3] and l[3] < date.today() %}
+          {% set estado = "table-danger" %}  {# Vencida - rojo #}
+        {% elif l[3] and (l[3] - date.today()).days <= 30 %}
+          {% set estado = "table-warning" %}  {# Pronto a vencer - amarillo #}
+        {% else %}
+          {% set estado = "table-success" %}  {# Vigente - verde #}
+        {% endif %}
 
+        <tr class="{{ estado }}">
+          <td>{{ l[0] }}</td>
+          <td>{{ l[1] }}</td>
+          <td>{{ l[2] }}</td>
+          <td>{{ l[3] }}</td>
+          <td>{{ l[4] }}</td>
+          <td>{{ l[6] if l[6] else "Sin asignar" }}</td>
+          <td>
+            <!-- Botones CRUD -->
+            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarLicencia{{ l[0] }}">
+              Editar
+            </button>
+                    <!-- Modal editar -->
+        <div class="modal fade" id="modalEditarLicencia{{ l[0] }}" tabindex="-1">
+          <div class="modal-dialog">
+            <form action="{{ url_for('invequip.editar_licencia', id=l[0]) }}" method="post" class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Editar Licencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <label>Software</label>
+                <input type="text" name="nombresoftware" value="{{ l[1] }}" class="form-control">
+                <label>Fecha Compra</label>
+                <input type="date" name="fechacompra" value="{{ l[2] }}" class="form-control">
+                <label>Fecha Expiración</label>
+                <input type="date" name="fechaexpiracion" value="{{ l[3] }}" class="form-control">
+                <label>Clave</label>
+                <input type="text" name="clavelicencia" value="{{ l[4] }}" class="form-control">
+                <label>Equipo</label>
+                <select name="idequipo" class="form-control">
+                  <option value="">-- Sin asignar --</option>
+                  {% for eq in equipos %}
+                    <option value="{{ eq[0] }}" {% if l[5] == eq[0] %}selected{% endif %}>{{ eq[1] }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+            <form action="{{ url_for('invequip.eliminar_licencia', id=l[0]) }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+     </tbody>
+  </table>
+</div>
 
+        
+<!-- Modal agregar -->
+<div class="modal fade" id="modalAgregarLicencia" tabindex="-1">
+  <div class="modal-dialog">
+    <form action="{{ url_for('invequip.agregar_licencia') }}" method="post" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Licencia</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label>Software</label>
+        <input type="text" name="nombresoftware" class="form-control">
+        <label>Fecha Compra</label>
+        <input type="date" name="fechacompra" class="form-control">
+        <label>Fecha Expiración</label>
+        <input type="date" name="fechaexpiracion" class="form-control">
+        <label>Clave</label>
+        <input type="text" name="clavelicencia" class="form-control">
+        <label>Equipo</label>
+        <select name="idequipo" class="form-control">
+          <option value="">-- Sin asignar --</option>
+          {% for eq in equipos %}
+            <option value="{{ eq[0] }}">{{ eq[1] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Agregar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="mantenimientos" class="seccion card-custom d-none">
+  <h3>Mantenimientos</h3>
+  <button class="btn btn-primary btn-sm mb-2" data-bs-toggle="modal" data-bs-target="#modalAddMantenimiento">
+    + Agregar
+  </button>
 
-    <div id="licencias" class="seccion card-custom d-none">
-      <h3>Licencias</h3>
-      <p>Hola, ingresaste a <strong>Licencias</strong>.</p>
+  <!-- Tabla mantenimientos -->
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th>Equipo</th>
+        <th>Fecha Realizado</th>
+        <th>Fecha Inscripción</th>
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>Técnico</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in mantenimientos %}
+      <tr>
+        <td>{{ m[2] }}</td>
+        <td>{{ m[3] }}</td>
+        <td>{{ m[4] }}</td>
+        <td>{{ m[5] }}</td>
+        <td>{{ m[6] }}</td>
+        <td>{{ m[7] }}</td>
+        <td>
+          <!-- Botón editar -->
+          <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditMantenimiento{{ m[0] }}">Editar</button>
+          <!-- Botón eliminar -->
+          <button class="btn btn-danger btn-sm" onclick="eliminarMantenimiento('{{ m[0] }}')">Eliminar</button>
+        </td>
+      </tr>
+
+      <!-- Modal Editar -->
+      <div class="modal fade" id="modalEditMantenimiento{{ m[0] }}" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Editar Mantenimiento</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <form id="formEditMantenimiento{{ m[0] }}">
+                <input type="hidden" name="id" value="{{ m[0] }}">
+                <div class="mb-2">
+                  <label>Equipo</label>
+                  <select class="form-control" name="idequipo">
+                    {% for e in equipos %}
+                    <option value="{{ e[0] }}" {% if e[0] == m[1] %}selected{% endif %}>{{ e[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label>Fecha Realizado</label>
+                  <input type="date" class="form-control" name="fecharealizado" value="{{ m[3] }}">
+                </div>
+                <div class="mb-2">
+                  <label>Fecha Inscripción</label>
+                  <input type="date" class="form-control" name="fechaincripcion" value="{{ m[4] }}">
+                </div>
+                <div class="mb-2">
+                  <label>Tipo</label>
+                  <input type="text" class="form-control" name="tipo" value="{{ m[5] }}">
+                </div>
+                <div class="mb-2">
+                  <label>Descripción</label>
+                  <textarea class="form-control" name="descripcion">{{ m[6] }}</textarea>
+                </div>
+                <div class="mb-2">
+                  <label>Técnico</label>
+                  <select class="form-control" name="idtecnico">
+                    {% for t in tecnicos_list %}
+                    <option value="{{ t[0] }}" {% if t[1] == m[7] %}selected{% endif %}>{{ t[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <button type="button" class="btn btn-success" onclick="updateMantenimiento('{{ m[0] }}')">Guardar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Agregar -->
+<div class="modal fade" id="modalAddMantenimiento" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Mantenimiento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formAddMantenimiento">
+          <div class="mb-2">
+            <label>Equipo</label>
+            <select class="form-control" name="idequipo">
+              {% for e in equipos %}
+              <option value="{{ e[0] }}">{{ e[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-2">
+            <label>Fecha Realizado</label>
+            <input type="date" class="form-control" name="fecharealizado">
+          </div>
+          <div class="mb-2">
+            <label>Fecha Inscripción</label>
+            <input type="date" class="form-control" name="fechaincripcion">
+          </div>
+          <div class="mb-2">
+            <label>Tipo</label>
+            <input type="text" class="form-control" name="tipo">
+          </div>
+          <div class="mb-2">
+            <label>Descripción</label>
+            <textarea class="form-control" name="descripcion"></textarea>
+          </div>
+          <div class="mb-2">
+            <label>Técnico</label>
+            <select class="form-control" name="idtecnico">
+              {% for t in tecnicos_list %}
+              <option value="{{ t[0] }}">{{ t[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="addMantenimiento()">Guardar</button>
+        </form>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div id="mantenimientos" class="seccion card-custom d-none">
-      <h3>Mantenimientos</h3>
-      <p>Hola, ingresaste a <strong>Mantenimientos</strong>.</p>
-    </div>
+<div id="pantalla" class="seccion card-custom d-none">
+  <h3 class="mb-4">Pantalla</h3>
 
-    <div id="pantalla" class="seccion card-custom d-none">
-      <h3>Pantalla</h3>
-      <p>Hola, ingresaste a <strong>Pantalla</strong>.</p>
+  <!-- Botones principales -->
+  <div class="mb-3">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarpantalla">
+      <i class="bi bi-plus-circle"></i> Agregar pantalla
+    </button>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregartipopantalla">
+      <i class="bi bi-plus-circle"></i> Agregar Tipo pantalla
+    </button>
+    <button class="btn btn-info text-white" data-bs-toggle="collapse" data-bs-target="#tipospantallaTable">
+      📋 Ver Tipos pantalla
+    </button>
+    <button class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#bajasTablepantalla">
+      📉 Ver Bajas
+    </button>
+  </div>
+
+  <!-- Tabla principal de pantallas -->
+  <table id="tablapantalla" class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Marca</th>
+        <th>Pulgadas</th>
+        <th>Voltaje</th>
+        <th>Amperaje</th>
+        <th>Serial</th>
+        <th>Equipo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mp in pantalla %}
+      <tr>
+        <td>{{ mp[0] }}</td>
+        <td>{{ mp[1] }}</td>
+        <td>{{ mp[2] }}</td>
+        <td>{{ mp[3] }}</td>
+        <td>{{ mp[4] }}</td>
+        <td>{{ mp[5] }}</td>
+        <td>{{ mp[7] if mp[7] else "Sin asignar" }}</td>
+        <td>
+          <!-- Botón Baja -->
+          <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBajapantalla{{ mp[0] }}">
+            ❌
+          </button>
+
+          <!-- Modal Baja -->
+          <div class="modal fade" id="modalBajapantalla{{ mp[0] }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalBajapantallaLabel{{ mp[0] }}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form action="{{ url_for('invequip.baja_pantalla', id=mp[0]) }}" method="post">
+                  <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalBajapantallaLabel{{ mp[0] }}">Dar de baja ID {{ mp[0] }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <label class="form-label">Motivo:</label>
+                    <input type="text" name="descripcion" class="form-control mb-2" required>
+                    <label class="form-label">Fecha Baja:</label>
+                    <input type="date" name="fecha_baja" class="form-control" required>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Editar pantalla -->
+          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarpantalla{{ mp[0] }}">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+
+          <!-- Modal Editar pantalla -->
+          <div class="modal fade" id="modalEditarpantalla{{ mp[0] }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalEditarpantallaLabel{{ mp[0] }}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title" id="modalEditarpantallaLabel{{ mp[0] }}">Editar pantalla</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ url_for('invequip.editar_pantalla', id=mp[0]) }}" method="POST">
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Pulgadas</label>
+                      <input type="number" step="any" class="form-control" name="pulgadas" value="{{ mp[2] }}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Voltaje</label>
+                      <input type="number" step="any" class="form-control" name="voltaje" value="{{ mp[3] }}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Amperaje</label>
+                      <input type="number" step="any" class="form-control" name="amperaje" value="{{ mp[4] }}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Serial</label>
+                      <input type="text" class="form-control" name="serial" value="{{ mp[5] }}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Tipo pantalla</label>
+                      <select name="idpantalla" class="form-select">
+                        {% for rp in tipopantalla %}
+                        <option value="{{ rp[0] }}" {% if rp[0] == mp[1] %}selected{% endif %}>
+                          {{ rp[1] }}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Tabla de bajas -->
+<div class="collapse mt-4" id="bajasTablepantalla">
+  <h4 class="fw-bold">📉 Registros en Baja</h4>
+  <div class="table-responsive">
+    <table id="tablaBajaspantalla" class="table table-bordered table-hover align-middle">
+      <thead class="table-secondary">
+        <tr>
+          <th>ID</th>
+          <th>ID Registro</th>
+          <th>Tabla</th>
+          <th>Descripción</th>
+          <th>Fecha Baja</th>
+          <th>Fecha Registro</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bp in bajas_pantalla %}
+        <tr>
+          <td>{{ bp[0] }}</td>
+          <td>{{ bp[1] }}</td>
+          <td>{{ bp[2] }}</td>
+          <td>{{ bp[3] }}</td>
+          <td>{{ bp[4] }}</td>
+          <td>{{ bp[5] }}</td>
+          <td>
+            <form action="{{ url_for('invequip.revertir_baja_pantalla', id=bp[1]) }}" method="post">
+              <button type="submit" class="btn btn-success btn-sm">🔄 Revertir</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal agregar pantalla -->
+<div class="modal fade" id="modalAgregarpantalla" tabindex="-1" aria-hidden="true" aria-labelledby="modalAgregarpantalla">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalAgregarpantallaLabel">Agregar pantalla</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ url_for('invequip.agregar_pantalla') }}" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Pulgadas</label>
+            <input type="number" step="any" class="form-control" name="pulgadas" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Voltaje</label>
+            <input type="number" step="any" class="form-control" name="voltaje" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Amperaje</label>
+            <input type="number" step="any" class="form-control" name="amperaje" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Serial</label>
+            <input type="text" class="form-control" name="serial" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tipo pantalla</label>
+            <select name="idpantalla" class="form-select" required>
+              <option value="">-- Seleccione --</option>
+              {% for rp in tipopantalla %}
+              <option value="{{ rp[0] }}">{{ rp[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
+
+<!-- Modal agregar tipo pantalla -->
+<div class="modal fade" id="modalAgregartipopantalla" tabindex="-1" aria-hidden="true" aria-labelledby="modalAgregartipopantalla">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalAgregartipopantallaLabel">Agregar Tipo pantalla</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ url_for('invequip.agregar_tipopantalla') }}" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Marca</label>
+            <input type="text" class="form-control" name="marca" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla de tipos pantalla -->
+<div class="collapse mt-4" id="tipospantallaTable">
+  <div class="card">
+    <div class="card-header bg-info text-white">
+      Tipos de pantalla
+    </div>
+    <div class="card-body">
+      <table id="tablatipopantalla" class="table table-hover table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Marca</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rp in tipopantalla %}
+          <tr>
+            <td>{{ rp[0] }}</td>
+            <td>{{ rp[1] }}</td>
+            <td>
+              <!-- Eliminar -->
+              <form action="{{ url_for('invequip.eliminar_tipopantalla', id=rp[0]) }}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este tipo de pantalla?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              <!-- Editar -->
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditartipopantalla{{ rp[0] }}">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+
+              <!-- Modal editar tipo pantalla -->
+              <div class="modal fade" id="modalEditartipopantalla{{ rp[0] }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalEditartipopantallaLabel{{ rp[0] }}">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                      <h5 class="modal-title" id="modalEditartipopantallaLabel{{ rp[0] }}">Editar Tipo pantalla</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ url_for('invequip.editar_tipopantalla', id=rp[0]) }}" method="POST">
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label class="form-label">Marca</label>
+                          <input type="text" class="form-control" name="marca" value="{{ rp[1] }}" required>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+
+
+
+
 
     <div id="perisfericos" class="seccion card-custom d-none">
-      <h3>Periféricos</h3>
-      <p>Hola, ingresaste a <strong>Periféricos</strong>.</p>
+  <h3 class="mb-4">Periféricos</h3>
+
+  <!-- Botones principales -->
+  <div class="mb-3">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarPerisferico">
+      <i class="bi bi-plus-circle"></i> Agregar Periférico
+    </button>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarMarcaPeris">
+      <i class="bi bi-plus-circle"></i> Agregar Marca
+    </button>
+    <button class="btn btn-info text-white" data-bs-toggle="collapse" data-bs-target="#marcasPerisTable">
+      📋 Ver Marcas
+    </button>
+    <button class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#bajasTablePeris">
+      📉 Ver Bajas
+    </button>
+  </div>
+
+  <!-- Tabla principal de periféricos -->
+  <table id="tablaPerisfericos" class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Serial</th>
+        <th>Descripción</th>
+        <th>Equipo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pf in perisfericos %}
+      <tr>
+        <td>{{ pf[0] }}</td>
+        <td>{{ pf[1] }}</td>
+        <td>{{ pf[2] }}</td>
+        <td>{{ pf[3] }}</td>
+        <td>{{ pf[4] }}</td>
+        <td>
+          {{ pf[7] if (pf|length > 7 and pf[7]) else (pf[5] if (pf|length > 5 and pf[5]) else "Sin asignar") }}
+        </td>
+        <td>
+          <!-- Botón Baja -->
+          <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBajaPeris{{ pf[0] }}">
+            ❌
+          </button>
+
+          <!-- Modal Baja -->
+          <div class="modal fade" id="modalBajaPeris{{ pf[0] }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalBajaPerisLabel{{ pf[0] }}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form action="{{ url_for('invequip.baja_perisferico', id=pf[0]) }}" method="post">
+                  <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalBajaPerisLabel{{ pf[0] }}">Dar de baja ID {{ pf[0] }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <label class="form-label">Motivo:</label>
+                    <input type="text" name="descripcion" class="form-control mb-2" required>
+                    <label class="form-label">Fecha Baja:</label>
+                    <input type="date" name="fecha_baja" class="form-control" required>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Editar -->
+          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarPeris{{ pf[0] }}">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+
+          <!-- Modal Editar -->
+          <div class="modal fade" id="modalEditarPeris{{ pf[0] }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalEditarPerisLabel{{ pf[0] }}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title" id="modalEditarPerisLabel{{ pf[0] }}">Editar Periférico</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ url_for('invequip.editar_perisferico', id=pf[0]) }}" method="POST">
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Modelo</label>
+                      <input type="text" class="form-control" name="modelo" value="{{ pf[2] }}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Serial</label>
+                      <input type="text" class="form-control" name="serial" value="{{ pf[3] }}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Descripción</label>
+                      <textarea class="form-control" name="descripcion">{{ pf[4] }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Marca</label>
+                      <select name="idmarca" class="form-select">
+                        {% for m in marcaperis %}
+                        <option value="{{ m[0] }}" {% if m[0] == pf[1] %}selected{% endif %}>
+                          {{ m[1] }}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Equipo (opcional)</label>
+                      <input type="number" class="form-control" name="idequipo" value="{{ pf[5] if (pf|length > 5 and pf[5]) else '' }}">
+                      <small class="form-text text-muted">Dejar vacío si no está asignado.</small>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Tabla de bajas -->
+<div class="collapse mt-4" id="bajasTablePeris">
+  <h4 class="fw-bold">📉 Registros en Baja</h4>
+  <div class="table-responsive">
+    <table id="tablaBajasPeris" class="table table-bordered table-hover align-middle">
+      <thead class="table-secondary">
+        <tr>
+          <th>ID</th>
+          <th>ID Registro</th>
+          <th>Tabla</th>
+          <th>Descripción</th>
+          <th>Fecha Baja</th>
+          <th>Fecha Registro</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bp in bajas_perisfericos %}
+        <tr>
+          <td>{{ bp[0] }}</td>
+          <td>{{ bp[1] }}</td>
+          <td>{{ bp[2] }}</td>
+          <td>{{ bp[3] }}</td>
+          <td>{{ bp[4] }}</td>
+          <td>{{ bp[5] }}</td>
+          <td>
+            <form action="{{ url_for('invequip.revertir_baja_perisferico', id=bp[1]) }}" method="post">
+              <button type="submit" class="btn btn-success btn-sm">🔄 Revertir</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal agregar periférico -->
+<div class="modal fade" id="modalAgregarPerisferico" tabindex="-1" aria-hidden="true" aria-labelledby="modalAgregarPerisfericoLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalAgregarPerisfericoLabel">Agregar Periférico</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ url_for('invequip.agregar_perisferico') }}" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Modelo</label>
+            <input type="text" class="form-control" name="modelo" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Serial</label>
+            <input type="text" class="form-control" name="serial" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" name="descripcion"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Marca</label>
+            <select name="idmarca" class="form-select" required>
+              <option value="">-- Seleccione --</option>
+              {% for m in marcaperis %}
+              <option value="{{ m[0] }}">{{ m[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Equipo (opcional)</label>
+            <input type="number" class="form-control" name="idequipo">
+            <small class="form-text text-muted">Id del equipo si lo quieres asignar ahora.</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
 
-    <div id="ram" class="seccion card-custom d-none">
-      <h3>Memoria RAM</h3>
-      <p>Hola, ingresaste a <strong>Memoria RAM</strong>.</p>
+<!-- Modal agregar marca -->
+<div class="modal fade" id="modalAgregarMarcaPeris" tabindex="-1" aria-hidden="true" aria-labelledby="modalAgregarMarcaPerisLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalAgregarMarcaPerisLabel">Agregar Marca</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ url_for('invequip.agregar_marcaperis') }}" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Marca</label>
+            <input type="text" class="form-control" name="marcas" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
+
+<!-- Tabla marcas -->
+<div class="collapse mt-4" id="marcasPerisTable">
+  <div class="card">
+    <div class="card-header bg-info text-white">Marcas de Periféricos</div>
+    <div class="card-body">
+      <table id="tablaMarcasPeris" class="table table-hover table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Marca</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in marcaperis %}
+          <tr>
+            <td>{{ m[0] }}</td>
+            <td>{{ m[1] }}</td>
+            <td>
+              <!-- Eliminar -->
+              <form action="{{ url_for('invequip.eliminar_marcaperis', id=m[0]) }}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar esta marca?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              <!-- Editar -->
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarMarcaPeris{{ m[0] }}">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+
+              <!-- Modal editar marca -->
+              <div class="modal fade" id="modalEditarMarcaPeris{{ m[0] }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalEditarMarcaPerisLabel{{ m[0] }}">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                      <h5 class="modal-title" id="modalEditarMarcaPerisLabel{{ m[0] }}">Editar Marca</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ url_for('invequip.editar_marcaperis', id=m[0]) }}" method="POST">
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label class="form-label">Marca</label>
+                          <input type="text" class="form-control" name="marcas" value="{{ m[1] }}" required>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 
 
 
 
 
+
+
+
+    
+<div id="ram" class="seccion card-custom d-none">
+  <h3 class="mb-4">Memoria RAM</h3>
+
+  <!-- Botones principales -->
+  <div class="mb-3">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarMemoria">
+      <i class="bi bi-plus-circle"></i> Agregar Memoria
+    </button>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarMemoriaRam">
+      <i class="bi bi-plus-circle"></i> Agregar Tipo RAM
+    </button>
+    <button class="btn btn-info text-white" data-bs-toggle="collapse" data-bs-target="#tiposRamTable">
+      📋 Ver Tipos RAM
+    </button>
+    <button class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#bajasTablememoriaram">
+      📉 Ver Bajas
+    </button>
+  </div>
+
+  <!-- Tabla principal de memorias -->
+  <table id="tablamemoriaram" class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Marca</th>
+        <th>Tipo</th>
+        <th>Capacidad (GB)</th>
+        <th>Frecuencia (MHz)</th>
+        <th>Equipo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in memorias %}
+      <tr>
+        <td>{{ m[0] }}</td>
+        <td>{{ m[1] }}</td>
+        <td>{{ m[5] }}</td>
+        <td>{{ m[6] }}</td>
+        <td>{{ m[7] }}</td>
+        <td>{{ m[2] if m[2] else "Sin asignar" }}</td>
+        <td>
+          <!-- Botón Baja -->
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBajamemoriaram{{ m[0] }}">
+              ❌
+            </button>
+            <!-- Modal Baja -->
+            <div class="modal fade" id="modalBajamemoriaram{{ m[0] }}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="{{ url_for('invequip.baja_memoriaram', id=m[0]) }}" method="post">
+                    <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title">Dar de baja ID {{ m[0] }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label class="form-label">Motivo:</label>
+                      <input type="text" name="descripcion" class="form-control mb-2" required>
+                      <label class="form-label">Fecha Baja:</label>
+                      <input type="date" name="fecha_baja" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-danger">Confirmar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <!-- Botón editar memoria -->
+          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarMemoria{{ m[0] }}">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+
+          <!-- Modal editar memoria -->
+          <div class="modal fade" id="modalEditarMemoria{{ m[0] }}" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title">Editar Memoria</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ url_for('invequip.editar_memoria', id=m[0]) }}" method="POST">
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Marca</label>
+                      <input type="text" class="form-control" name="marca" value="{{ m[1] }}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Tipo RAM</label>
+                      <select name="idmemoriaram" class="form-select">
+                        {% for r in memoriasram %}
+                        <option value="{{ r[0] }}" {% if r[0] == m[4] %}selected{% endif %}>
+                          {{ r[1] }} - {{ r[2] }} GB - {{ r[3] }} MHz
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Tabla de bajas -->
+<div class="collapse mt-4" id="bajasTablememoriaram">
+  <h4 class="fw-bold">📉 Registros en Baja</h4>
+  <div class="table-responsive">
+    <table id="tablaBajasmemoriaram" class="table table-bordered table-hover align-middle">
+      <thead class="table-secondary">
+        <tr>
+          <th>ID</th>
+          <th>ID Registro</th>
+          <th>Tabla</th>
+          <th>Descripción</th>
+          <th>Fecha Baja</th>
+          <th>Fecha Registro</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bajas_memoria %}
+        <tr>
+          <td>{{ b[0] }}</td>
+          <td>{{ b[1] }}</td>
+          <td>{{ b[2] }}</td>
+          <td>{{ b[3] }}</td>
+          <td>{{ b[4] }}</td>
+          <td>{{ b[5] }}</td>
+          <td>
+            <form action="{{ url_for('invequip.revertir_baja_memoriaram', id=b[1]) }}" method="post">
+              <button type="submit" class="btn btn-success btn-sm">🔄 Revertir</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+<!-- Modal agregar memoria -->
+  <div class="modal fade" id="modalAgregarMemoria" tabindex="-1">
+     <div class="modal-dialog"> <div class="modal-content"> 
+      <div class="modal-header bg-success text-white">
+         <h5 class="modal-title">Agregar Memoria</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+         </div> <form action="{{ url_for('invequip.agregar_memoria') }}" method="POST">
+           <div class="modal-body"> <div class="mb-3"> <label class="form-label">Marca</label>
+             <input type="text" class="form-control" name="marca" required> </div> <div class="mb-3"> 
+              <label class="form-label">Tipo RAM</label> <select name="idmemoriaram" class="form-select" required> 
+                <option value="">-- Seleccione --</option> {% for r in memoriasram %} 
+                <option value="{{ r[0] }}">{{ r[1] }} - {{ r[2] }} GB - {{ r[3] }} MHz</option>
+                 {% endfor %} </select> </div> </div> <div class="modal-footer"> 
+                  <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                   <button type="submit" class="btn btn-success">Guardar</button>
+                   </div>
+                   </form> 
+                  </div>
+                 </div>
+                 </div>
+    <!-- Modal agregar tipo RAM -->
+      <div class="modal fade" id="modalAgregarMemoriaRam" tabindex="-1">
+         <div class="modal-dialog"> <div class="modal-content">
+           <div class="modal-header bg-success text-white">
+             <h5 class="modal-title">Agregar Tipo RAM</h5> 
+             <button type="button" class="btn-close" data-bs-dismiss="modal">
+
+             </button>
+             </div>
+              <form action="{{ url_for('invequip.agregar_memoriaram') }}" method="POST">
+                 <div class="modal-body">
+                   <div class="mb-3">
+                     <label class="form-label">Tipo</label>
+                      <input type="text" class="form-control" name="tipo" required>
+                     </div> <div class="mb-3"> <label class="form-label">Capacidad (GB)</label>
+                       <input type="number" class="form-control" name="capacidad" required>
+                       </div>
+                        <div class="mb-3">
+                           <label class="form-label">Frecuencia (MHz)</label>
+                            <input type="number" class="form-control" name="frecuencia" required>
+                           </div>
+                          </div>
+                           <div class="modal-footer">
+                             <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                              <button type="submit" class="btn btn-success">Guardar</button>
+                             </div>
+                             </form> 
+                            </div> 
+                          </div> 
+                        </div>
+
+<!-- Tabla de tipos RAM (colapsable con botón) -->
+<div class="collapse mt-4" id="tiposRamTable">
+  <div class="card">
+    <div class="card-header bg-info text-white">
+      Tipos de Memoria RAM
+    </div>
+    <div class="card-body">
+      <table id="tablatipomemoriaram" class="table table-hover table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Capacidad (GB)</th>
+            <th>Frecuencia (MHz)</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in memoriasram %}
+          <tr>
+            <td>{{ r[0] }}</td>
+            <td>{{ r[1] }}</td>
+            <td>{{ r[2] }}</td>
+            <td>{{ r[3] }}</td>
+            <td>
+              <!-- Eliminar -->
+              <form action="{{ url_for('invequip.eliminar_memoriaram', id=r[0]) }}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este tipo de RAM?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              <!-- Editar -->
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarMemoriaRam{{ r[0] }}">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+
+              <!-- Modal editar tipo RAM -->
+              <div class="modal fade" id="modalEditarMemoriaRam{{ r[0] }}" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                      <h5 class="modal-title">Editar Tipo RAM</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ url_for('invequip.editar_memoriaram', id=r[0]) }}" method="POST">
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label class="form-label">Tipo</label>
+                          <input type="text" class="form-control" name="tipo" value="{{ r[1] }}" required>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label">Capacidad (GB)</label>
+                          <input type="number" class="form-control" name="capacidad" value="{{ r[2] }}" required>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label">Frecuencia (MHz)</label>
+                          <input type="number" class="form-control" name="frecuencia" value="{{ r[3] }}" required>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 <div id="procesador" class="seccion card-custom d-none">
   <h3 class="mb-3">Procesador</h3>
   <!-- Botones superiores -->
@@ -2824,8 +3954,91 @@ modalEditarBoard.addEventListener('show.bs.modal', function (event) {
         "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
       }
     });
+        $('#licencia').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#tablatipomemoriaram').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#tablamemoriaram').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+        $('#tablaBajasmemoriaram').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#tablatipopantalla').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+    $('#tablapantalla').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
+        $('#tablaBajaspantalla').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 25, 50, 75, 100],
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+      }
+    });
 
   });
+</script>
+<script>
+function addMantenimiento() {
+  let form = document.getElementById("formAddMantenimiento");
+  let data = Object.fromEntries(new FormData(form));
+  fetch("/mantenimientos/add", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  }).then(r => r.json()).then(res => {
+    if (res.status === "ok") location.reload();
+  });
+}
+
+function updateMantenimiento(id) {
+  let form = document.getElementById("formEditMantenimiento" + id);
+  let data = Object.fromEntries(new FormData(form));
+  fetch("/mantenimientos/update/" + id, {
+    method: "PUT",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  }).then(r => r.json()).then(res => {
+    if (res.status === "ok") location.reload();
+  });
+}
+
+function eliminarMantenimiento(id) {
+  if (!confirm("¿Seguro que quieres eliminar este mantenimiento?")) return;
+  fetch("/mantenimientos/delete/" + id, { method: "DELETE" })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === "ok") location.reload();
+    });
+}
 </script>
 </body>
 </html>

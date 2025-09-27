@@ -6792,3 +6792,1444 @@ werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequ
 2025-09-21 17:40:36,519 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
 2025-09-21 17:40:39,578 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
 2025-09-21 17:40:44,507 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 17:59:12,191 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 17:59:14,372 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 17:59:14,807 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 18:59:23,936 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 18:59:24,116 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 18:59:24,369 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 180, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<26 lines>...
+                           licencias=licencias,
+                           board =board)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1205, in top-level template code
+    {% if l[3] and l[3] < date.today() %}
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'date' is undefined
+2025-09-21 19:00:31,897 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:00:32,647 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:00:32,908 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:01:50,338 - INFO - Usuario: jefe | Rol: jefe  | POST /licencias/agregar
+2025-09-21 19:01:50,421 - ERROR - Exception on /licencias/agregar [POST]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 1518, in agregar_licencia
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        INSERT INTO licenciasequipo (nombresoftware, fechacompra, fechaexpiracion, clavelicencia, idequipo)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        request.form.get("idequipo") if request.form.get("idequipo") else None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+psycopg2.errors.InvalidDatetimeFormat: la sintaxis de entrada no es válida para tipo date: «»
+LINE 3:         VALUES ('dsfgh', '', '2025-08-01', 'sfgdfsdfsdf', NU...
+                                 ^
+
+2025-09-21 19:02:12,673 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:02:14,787 - INFO - Usuario: jefe | Rol: jefe  | POST /licencias/agregar
+2025-09-21 19:02:14,842 - ERROR - Exception on /licencias/agregar [POST]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 1518, in agregar_licencia
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        INSERT INTO licenciasequipo (nombresoftware, fechacompra, fechaexpiracion, clavelicencia, idequipo)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        request.form.get("idequipo") if request.form.get("idequipo") else None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+psycopg2.errors.InvalidDatetimeFormat: la sintaxis de entrada no es válida para tipo date: «»
+LINE 3:         VALUES ('dsfgh', '', '2025-08-01', 'sfgdfsdfsdf', NU...
+                                 ^
+
+2025-09-21 19:02:58,036 - INFO - Usuario: jefe | Rol: jefe  | POST /licencias/agregar
+2025-09-21 19:02:58,116 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:02:58,306 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:03:08,571 - INFO - Usuario: jefe | Rol: jefe  | POST /licencias/eliminar/3
+2025-09-21 19:03:08,634 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:03:08,828 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:04:01,977 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:04:03,085 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:04:03,422 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 180, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<27 lines>...
+                           board =board,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1259, in top-level template code
+    <form action="{{ url_for('invequip.eliminar_licencia', id=l[0]) }}" method="post" style="display:inline;">
+    ^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'l' is undefined
+2025-09-21 19:04:41,753 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:04:41,771 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:04:42,088 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:07:33,223 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:07:33,312 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:07:33,512 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 180, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<27 lines>...
+                           board =board,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 2432, in template
+    <form method="POST" action="{{ url_for('invequip.editar_usuario_dominio') }}">
+    ^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endfor' or 'else'. The innermost block that needs to be closed is 'for'.
+2025-09-21 19:09:08,009 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:09:08,604 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:09:08,995 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:12:15,912 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:12:18,484 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:12:18,927 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 180, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<27 lines>...
+                           board =board,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1236, in top-level template code
+    <div class="modal fade" id="modalEditarLicencia{{ l[0] }}" tabindex="-1">
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'l' is undefined
+2025-09-21 19:12:21,229 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:12:21,303 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 180, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<27 lines>...
+                           board =board,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1236, in top-level template code
+    <div class="modal fade" id="modalEditarLicencia{{ l[0] }}" tabindex="-1">
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'l' is undefined
+2025-09-21 19:13:12,639 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:13:14,690 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:13:15,031 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 180, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<27 lines>...
+                           board =board,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1236, in top-level template code
+    <div class="modal fade" id="modalEditarLicencia{{ l[0] }}" tabindex="-1">
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'l' is undefined
+2025-09-21 19:13:48,529 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:13:50,712 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:13:51,047 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 180, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<27 lines>...
+                           board =board,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1267, in top-level template code
+    <div class="modal fade" id="modalEditarLicencia{{ l[0] }}" tabindex="-1">
+    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'l' is undefined
+2025-09-21 19:14:16,436 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:14:17,025 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:14:17,461 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:14:55,424 - INFO - Usuario: jefe | Rol: jefe  | POST /licencias/editar/2
+2025-09-21 19:14:55,498 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:14:55,618 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:16:21,127 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:17:12,713 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 19:17:12,911 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:17:13,294 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:38:40,637 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:38:40,840 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:39:02,814 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:39:04,685 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 19:39:06,179 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/2
+2025-09-21 19:39:11,235 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/2/export/pdf
+2025-09-21 19:43:33,400 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 19:43:33,526 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:04:15,530 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 20:04:18,821 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:04:19,156 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:05:41,674 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 20:05:46,602 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:05:46,966 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:05:56,632 - INFO - Usuario: jefe | Rol: jefe  | DELETE /mantenimientos/delete/2
+2025-09-21 20:05:56,701 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:05:56,843 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:06:21,931 - INFO - Usuario: jefe | Rol: jefe  | PUT /mantenimientos/update/1
+2025-09-21 20:06:21,988 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:06:22,110 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:06:47,095 - INFO - Usuario: jefe | Rol: jefe  | POST /mantenimientos/add
+2025-09-21 20:06:47,155 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:06:47,277 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:07:46,267 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:07:46,409 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:09:13,123 - INFO - Serving on http://0.0.0.0:5000
+2025-09-21 20:09:18,146 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:09:18,493 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:09:47,310 - INFO - Usuario: jefe | Rol: jefe  | POST /mantenimientos/add
+2025-09-21 20:09:47,449 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:09:52,570 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:09:52,692 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-21 20:10:27,409 - INFO - Usuario: jefe | Rol: jefe  | PUT /mantenimientos/update/4
+2025-09-21 20:10:27,461 - INFO - Usuario: jefe | Rol: jefe  | PUT /inventario_equipos
+2025-09-21 20:10:30,763 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-21 20:10:30,894 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-24 19:38:22,015 - INFO - Serving on http://0.0.0.0:5000
+2025-09-24 19:38:32,107 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-24 19:38:47,635 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-24 19:38:47,848 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-24 19:38:55,495 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-24 19:38:55,830 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-24 19:38:55,912 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-24 19:39:55,999 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-24 19:40:10,791 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-24 19:40:57,603 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/2
+2025-09-24 19:40:57,760 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-24 19:41:15,776 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/2/export/pdf
+2025-09-24 19:41:40,207 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/2/export/word
+2025-09-24 19:41:43,188 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/2/export/pdf
+2025-09-24 19:43:38,162 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-24 19:43:38,273 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-24 19:43:43,542 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-24 19:43:46,894 - INFO - Usuario: jefe | Rol: jefe  | GET /adminuser
+2025-09-24 19:46:38,003 - INFO - Serving on http://0.0.0.0:5000
+2025-09-24 19:47:13,262 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-24 19:47:14,679 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-24 19:47:26,262 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-24 19:47:27,068 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-24 19:47:38,848 - INFO - Usuario: jefe | Rol: jefe  | GET /inventarioarticulo
+2025-09-24 19:47:43,570 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /inventarioarticulo
+2025-09-24 19:47:43,916 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-24 19:47:44,581 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-24 19:47:44,583 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-24 19:47:59,480 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-24 19:48:02,296 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-24 19:48:03,522 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /inventario_equipos
+2025-09-24 19:48:03,727 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-24 19:48:03,959 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-24 19:48:04,242 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /home
+2025-09-24 19:48:04,602 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-24 19:55:24,170 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-24 19:55:25,863 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-24 19:55:35,314 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-24 19:55:36,282 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-25 20:46:58,415 - INFO - Serving on http://0.0.0.0:5000
+2025-09-25 20:47:07,320 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-25 20:47:09,235 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-25 20:47:16,634 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-25 20:47:17,551 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-25 20:47:29,000 - INFO - Usuario: jefe | Rol: jefe  | GET /inventarioarticulo
+2025-09-25 20:47:33,291 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-25 20:47:35,693 - INFO - Usuario: jefe | Rol: jefe  | GET /adminuser
+2025-09-25 20:47:36,545 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-25 20:48:02,372 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-25 20:48:06,962 - INFO - Usuario: jefe | Rol: jefe  | GET /registrar_huella
+2025-09-25 20:48:14,459 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-25 20:48:15,897 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-25 20:48:18,381 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-25 20:48:40,628 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/1
+2025-09-25 20:48:46,893 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/1/export/pdf
+2025-09-25 20:49:11,640 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-25 20:49:13,143 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-25 20:49:19,772 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-25 20:49:23,789 - INFO - Usuario: jefe | Rol: jefe  | GET /logout
+2025-09-25 20:49:24,269 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-26 16:54:24,585 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 16:54:46,263 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-26 16:54:47,182 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-26 16:55:05,393 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-26 16:55:25,236 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-26 16:55:25,511 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-26 16:55:25,977 - INFO - Usuario: jefe | Rol: jefe  | GET /static/favicon.svg
+2025-09-26 16:55:36,522 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 16:55:37,513 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-26 16:55:37,515 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 17:25:04,102 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 17:25:07,505 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-26 17:25:13,624 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-26 17:25:13,811 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-26 17:25:16,512 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 17:25:17,070 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 17:25:17,173 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-26 18:56:38,288 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 18:57:12,278 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-26 18:57:12,693 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-26 18:57:23,099 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-26 18:57:23,679 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-26 18:57:23,911 - INFO - Usuario: jefe | Rol: jefe  | GET /static/favicon.svg
+2025-09-26 18:57:31,385 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 18:57:32,422 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 18:57:33,608 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-26 18:57:50,289 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/1
+2025-09-26 18:58:01,071 - INFO - Usuario: jefe | Rol: jefe  | POST /equiposcaracteristicas/1/perisfericos/agregar
+2025-09-26 18:58:01,210 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/1
+2025-09-26 18:58:01,397 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-26 18:58:07,945 - INFO - Usuario: jefe | Rol: jefe  | POST /equiposcaracteristicas/1/perisfericos/3/quitar
+2025-09-26 18:58:08,035 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/1
+2025-09-26 18:58:08,309 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-26 18:58:20,771 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 18:58:21,055 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 18:58:48,739 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 18:58:51,388 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 18:58:57,816 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 18:59:01,230 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 18:59:03,649 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 18:59:07,598 - INFO - Usuario: jefe | Rol: jefe  | GET /equiposcaracteristicas/3
+2025-09-26 19:01:05,963 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-26 19:01:06,001 - INFO - Usuario: jefe | Rol: jefe  | GET /static/favicon.svg
+2025-09-26 21:48:22,786 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 21:48:30,134 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-26 21:48:30,359 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-26 21:48:39,300 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-26 21:48:39,921 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-26 21:48:40,096 - INFO - Usuario: jefe | Rol: jefe  | GET /static/favicon.svg
+2025-09-26 21:48:43,755 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 21:48:44,644 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 21:48:45,247 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-26 21:49:40,467 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 21:49:44,124 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 21:49:44,700 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 21:55:15,294 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 21:55:15,309 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 21:55:15,731 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:00:00,661 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:00:02,293 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-26 22:00:02,393 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-26 22:00:08,424 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-26 22:00:08,781 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-26 22:00:12,641 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:00:13,386 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:00:13,498 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-26 22:11:09,951 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:11:19,222 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:11:19,557 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 201, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<30 lines>...
+                           memoriasram=memoriasram,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1495, in top-level template code
+    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBaja{{ r[0] }}">
+    ^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'r' is undefined
+2025-09-26 22:16:56,225 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:17:01,097 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:17:01,425 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 201, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<30 lines>...
+                           memoriasram=memoriasram,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1495, in top-level template code
+    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalBaja{{ r[0] }}">
+    ^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'r' is undefined
+2025-09-26 22:20:00,735 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:20:05,052 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:20:05,572 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:20:37,609 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:20:37,756 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:23:36,033 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:23:39,350 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:23:39,857 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:23:47,754 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:23:47,899 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:27:47,748 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:27:50,380 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:27:50,775 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:30:31,178 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:30:33,075 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:30:33,477 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:32:30,685 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:32:32,270 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:32:32,594 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 201, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<30 lines>...
+                           memoriasram=memoriasram,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1555, in top-level template code
+    <form action="{{ url_for('invequip.agregar_tipo_ram') }}" method="POST">
+    ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequip.agregar_tipo_ram'. Did you mean 'invequip.agregar_equipo' instead?
+2025-09-26 22:32:33,694 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:32:33,794 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 201, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<30 lines>...
+                           memoriasram=memoriasram,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1555, in top-level template code
+    <form action="{{ url_for('invequip.agregar_tipo_ram') }}" method="POST">
+    ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequip.agregar_tipo_ram'. Did you mean 'invequip.agregar_equipo' instead?
+2025-09-26 22:34:28,514 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:34:36,423 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:34:36,941 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:35:28,497 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:35:28,651 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:37:57,660 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:37:59,233 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:37:59,599 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:42:12,413 - INFO - Usuario: jefe | Rol: jefe  | POST /memoria/agregar
+2025-09-26 22:42:12,486 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:42:12,639 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:42:31,719 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/agregar
+2025-09-26 22:42:31,781 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:42:31,913 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:42:49,450 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/editar/15
+2025-09-26 22:42:49,516 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:42:49,632 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:43:02,389 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/eliminar/15
+2025-09-26 22:43:02,472 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:43:02,606 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:43:44,131 - INFO - Usuario: jefe | Rol: jefe  | POST /memoria/editar/7
+2025-09-26 22:43:44,239 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:43:44,549 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-26 22:45:06,800 - INFO - Serving on http://0.0.0.0:5000
+2025-09-26 22:45:10,204 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-26 22:45:10,914 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 11:20:21,190 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 11:20:21,267 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-27 11:20:21,383 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /static/favicon.svg
+2025-09-27 11:20:30,099 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-27 11:20:30,540 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-27 11:20:34,356 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 11:20:34,976 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 11:20:35,132 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-27 11:36:59,429 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 11:37:02,371 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 11:37:02,712 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 11:53:44,128 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 11:53:44,959 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 11:53:45,349 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 11:58:02,406 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 11:58:03,871 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 11:58:04,317 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 11:59:12,309 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 11:59:14,666 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 11:59:15,156 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 11:59:51,105 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 11:59:55,304 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 11:59:55,681 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:02:48,033 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:02:51,903 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:02:52,313 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:03:40,364 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:03:43,622 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:03:44,077 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:04:48,107 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:04:49,077 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:04:49,507 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:05:17,481 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:05:19,785 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:05:20,140 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:05:20,848 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:05:20,973 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:07:40,213 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:08:23,675 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:08:26,658 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:08:27,035 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:09:01,129 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:09:05,278 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:09:05,657 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:10:09,401 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:10:12,622 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:10:13,026 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:13:17,927 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:13:19,631 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:13:20,049 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:14:33,410 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:14:36,281 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:14:36,734 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:16:50,599 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:17:38,220 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:17:41,670 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:17:42,012 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:18:16,776 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:18:19,738 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:18:20,046 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:26:46,583 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:26:50,112 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:26:50,490 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:27:04,432 - INFO - Usuario: jefe | Rol: jefe  | POST /almacenamiento/baja/7
+2025-09-27 12:27:04,525 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:27:04,726 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:27:26,828 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/revertir/7
+2025-09-27 12:27:26,957 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:27:27,062 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:29:25,094 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:29:27,515 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:29:27,908 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:29:30,081 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:29:30,203 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:29:31,306 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:29:31,429 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:29:40,250 - INFO - Usuario: jefe | Rol: jefe  | POST /almacenamiento/baja/7
+2025-09-27 12:29:40,321 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:29:40,417 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:29:46,573 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:29:46,685 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:32:09,368 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/revertir/7
+2025-09-27 12:32:09,474 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:32:09,605 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:32:16,746 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:32:16,887 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:34:27,718 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:34:30,955 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:34:31,385 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:34:40,134 - INFO - Usuario: jefe | Rol: jefe  | POST /almacenamiento/baja/7
+2025-09-27 12:34:40,310 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:34:40,431 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:37:25,929 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:37:56,721 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:37:56,989 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:38:08,973 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/baja/7
+2025-09-27 12:38:09,069 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:38:09,194 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:38:43,506 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/baja/7
+2025-09-27 12:38:43,578 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:38:43,741 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:39:35,612 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:39:37,056 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:39:37,303 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:39:46,345 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/baja/7
+2025-09-27 12:39:46,432 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:39:46,571 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:39:54,994 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:39:55,150 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:40:49,878 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:40:50,080 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:40:50,313 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:40:53,298 - INFO - Usuario: jefe | Rol: jefe  | POST /memoriaram/revertir/7
+2025-09-27 12:40:53,387 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:40:53,504 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 12:46:20,937 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:48:05,683 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 12:48:06,749 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 12:48:07,189 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 14:33:18,558 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 14:33:23,811 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 14:33:23,910 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 207, in inventario_equipos
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        SELECT p.id,mp.marcca,p.pulgadas,p.voltaje,p.amperaje,p.serial,p.idequipo,p.baja,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        ORDER BY p.id;
+        ^^^^^^^^^^^^^^
+    """)
+    ^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna mp.marcca
+LINE 2:         SELECT p.id,mp.marcca,p.pulgadas,p.voltaje,p.amperaj...
+                            ^
+HINT:  Probablemente quiera hacer referencia a la columna «mp.marca».
+
+2025-09-27 14:33:55,001 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 14:33:55,432 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 14:33:55,852 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 14:34:06,538 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 14:34:06,668 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 14:34:16,542 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 14:34:17,364 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 14:34:17,590 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 14:34:20,548 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 14:34:20,799 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 14:53:31,718 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 14:53:31,990 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 14:56:13,199 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 14:56:16,728 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 14:56:17,248 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:01:55,262 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:01:55,468 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:03:17,238 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:03:20,841 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:03:21,230 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:24:06,740 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:24:08,711 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:24:09,092 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 232, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<34 lines>...
+                           bajas_pantalla=bajas_pantalla,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1556, in top-level template code
+    <option value="{{ rp[0] }}" {% if r[0] == mp[1] %}selected{% endif %}>
+    ^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'r' is undefined
+2025-09-27 15:24:10,518 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:24:10,613 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 232, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<34 lines>...
+                           bajas_pantalla=bajas_pantalla,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1556, in top-level template code
+    <option value="{{ rp[0] }}" {% if r[0] == mp[1] %}selected{% endif %}>
+    ^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 471, in getitem
+    return obj[argument]
+           ~~~^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'r' is undefined
+2025-09-27 15:25:00,586 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:25:00,669 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:25:01,094 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:25:49,095 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:25:49,609 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:25:49,986 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:28:03,310 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:28:04,368 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:28:04,780 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:29:45,376 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/agregar
+2025-09-27 15:30:29,413 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/agregar
+2025-09-27 15:33:53,343 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:33:56,190 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:33:56,618 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:34:04,286 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/agregar
+2025-09-27 15:34:33,163 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:34:37,555 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/agregar
+2025-09-27 15:41:26,737 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:41:28,752 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:41:28,965 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:41:39,903 - INFO - Usuario: jefe | Rol: jefe  | POST /tipopantalla/agregar
+2025-09-27 15:41:39,984 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:41:40,088 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:42:09,280 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/agregar
+2025-09-27 15:42:09,452 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:42:09,553 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:42:30,387 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/editar/3
+2025-09-27 15:42:30,460 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:42:30,590 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:42:47,795 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/baja/3
+2025-09-27 15:42:47,865 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:42:47,983 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:42:51,366 - INFO - Usuario: jefe | Rol: jefe  | POST /pantalla/revertir/3
+2025-09-27 15:42:51,452 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:42:51,699 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 15:50:30,551 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 15:50:35,176 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 15:50:35,537 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 232, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<34 lines>...
+                           bajas_pantalla=bajas_pantalla,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1859, in top-level template code
+    <form action="{{ url_for('invequip.agregar_perisferico') }}" method="POST">
+    ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequip.agregar_perisferico'. Did you mean 'caracequipos.agregar_perisfericos' instead?
+2025-09-27 16:00:00,700 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:00:04,911 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:00:05,005 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 228, in inventario_equipos
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        SELECT p.id, m.marcas, p.modelo, p.serial, p.descripcion,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        ORDER BY p.id DESC
+        ^^^^^^^^^^^^^^^^^^
+    """)
+    ^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna e.nombre_equipo
+LINE 3:                e.nombre_equipo, p.idequipo
+                       ^
+
+2025-09-27 16:03:42,937 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:03:44,363 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:03:44,475 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 244, in inventario_equipos
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        SELECT id, id_registro, tabla, descripcion, fecha_baja, fecha_registro
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ORDER BY fecha_baja DESC
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    """)
+    ^^^^
+psycopg2.errors.UndefinedTable: no existe la relación «bajas»
+LINE 3:         FROM bajas
+                     ^
+
+2025-09-27 16:04:24,306 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:04:25,209 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:04:25,323 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 244, in inventario_equipos
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        SELECT id, id_registro, tabla, descripcion, fecha_baja, fecha_registro
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ORDER BY fecha_baja DESC
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    """)
+    ^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna «id_registro»
+LINE 2:         SELECT id, id_registro, tabla, descripcion, fecha_ba...
+                           ^
+HINT:  Probablemente quiera hacer referencia a la columna «baja.idregistro».
+
+2025-09-27 16:05:28,854 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:05:30,638 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:05:30,828 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 244, in inventario_equipos
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        SELECT id, idregistro, tabla, descripcion, fecha_baja, fecharegistro
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ORDER BY fecha_baja DESC
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    """)
+    ^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna «fecha_baja»
+LINE 2: ...       SELECT id, idregistro, tabla, descripcion, fecha_baja...
+                                                             ^
+HINT:  Probablemente quiera hacer referencia a la columna «baja.fechabaja».
+
+2025-09-27 16:05:46,342 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:05:46,885 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:05:46,999 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 244, in inventario_equipos
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        SELECT id, idregistro, tabla, descripcion, fecha_baja, fecharegistro
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ORDER BY fechabaja DESC
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    """)
+    ^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna «fecha_baja»
+LINE 2: ...       SELECT id, idregistro, tabla, descripcion, fecha_baja...
+                                                             ^
+HINT:  Probablemente quiera hacer referencia a la columna «baja.fechabaja».
+
+2025-09-27 16:06:25,546 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:06:27,007 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:06:27,403 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 255, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<37 lines>...
+                           bajas_pantalla=bajas_pantalla,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1811, in top-level template code
+    <form action="{{ url_for('invequip.baja_perisferico', id=pf[0]) }}" method="post">
+    ^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequip.baja_perisferico' with values ['id']. Did you mean 'invequip.baja_peris' instead?
+2025-09-27 16:07:53,893 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:07:55,529 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:07:55,801 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:08:18,090 - INFO - Usuario: jefe | Rol: jefe  | POST /marcaperis/agregar
+2025-09-27 16:08:18,167 - ERROR - Exception on /marcaperis/agregar [POST]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 2152, in agregar_marcaperis
+    return redirect(url_for("invequip.perisfericos"))
+                    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\helpers.py", line 232, in url_for
+    return current_app.url_for(
+           ~~~~~~~~~~~~~~~~~~~^
+        endpoint,
+        ^^^^^^^^^
+    ...<4 lines>...
+        **values,
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequip.perisfericos'. Did you mean 'invequip.baja_perisferico' instead?
+2025-09-27 16:13:33,707 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:14:15,159 - INFO - Usuario: jefe | Rol: jefe  | POST /marcaperis/agregar
+2025-09-27 16:14:15,229 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:14:15,445 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:14:34,744 - INFO - Usuario: jefe | Rol: jefe  | POST /marcaperis/eliminar/16
+2025-09-27 16:14:34,857 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:14:34,992 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:14:55,646 - INFO - Usuario: jefe | Rol: jefe  | POST /marcaperis/editar/15
+2025-09-27 16:14:55,700 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:14:55,818 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:15:25,406 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/agregar
+2025-09-27 16:15:25,481 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:15:25,621 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:15:54,097 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/editar/5
+2025-09-27 16:15:54,179 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:15:54,298 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:16:04,382 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/editar/5
+2025-09-27 16:16:04,474 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:16:04,593 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:16:11,750 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/baja/5
+2025-09-27 16:16:11,806 - ERROR - Exception on /perisfericos/baja/5 [POST]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 2103, in baja_perisferico
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        INSERT INTO bajas (id_registro, tabla, descripcion, fecha_baja, fecha_registro)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        VALUES (%s, %s, %s, %s, %s)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    """, (id, "perisfericos", descripcion, fecha_baja, date.today()))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: no existe la relación «bajas»
+LINE 2:         INSERT INTO bajas (id_registro, tabla, descripcion, ...
+                            ^
+
+2025-09-27 16:21:54,233 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:22:01,890 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:22:02,148 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:22:11,145 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/baja/5
+2025-09-27 16:22:11,211 - ERROR - Exception on /perisfericos/baja/5 [POST]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 2103, in baja_perisferico
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        INSERT INTO bajas (idregistro, tabla, descripcion, fechabaja, fecharegistro)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        VALUES (%s, %s, %s, %s, %s)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    """, (id, "perisfericos", descripcion, fecha_baja, date.today()))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: no existe la relación «bajas»
+LINE 2:         INSERT INTO bajas (idregistro, tabla, descripcion, f...
+                            ^
+
+2025-09-27 16:22:25,141 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:22:27,153 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/baja/5
+2025-09-27 16:22:27,209 - ERROR - Exception on /perisfericos/baja/5 [POST]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 2103, in baja_perisferico
+    cur.execute("""
+    ~~~~~~~~~~~^^^^
+        INSERT INTO bajas (idregistro, tabla, descripcion, fechabaja, fecharegistro)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        VALUES (%s, %s, %s, %s, %s)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    """, (id, "perisfericos", descripcion, fecha_baja, date.today()))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: no existe la relación «bajas»
+LINE 2:         INSERT INTO bajas (idregistro, tabla, descripcion, f...
+                            ^
+
+2025-09-27 16:22:54,394 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:23:03,463 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/baja/5
+2025-09-27 16:23:03,542 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:23:03,777 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:24:51,842 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:24:56,320 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:24:56,601 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:25:57,121 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:25:57,285 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:25:57,560 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 255, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<37 lines>...
+                           bajas_pantalla=bajas_pantalla,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1916, in top-level template code
+    <form action="{{ url_for('invequip.revertir_baja_peris', id=bp[1]) }}" method="post">
+    ^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequip.revertir_baja_peris' with values ['id']. Did you mean 'invequip.revertir_baja_perisferico' instead?
+2025-09-27 16:26:52,631 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:26:53,115 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:26:53,477 - ERROR - Exception on /inventario_equipos [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 255, in inventario_equipos
+    return render_template("inventarioequipos.html",
+                           usuario=session["usuario"],
+    ...<37 lines>...
+                           bajas_pantalla=bajas_pantalla,
+                           date=date)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\inventarioequipos.html", line 1916, in top-level template code
+    <form action="{{ url_for('invequip.revertir_baja_perisfericos', id=bp[1]) }}" method="post">
+    ^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'invequip.revertir_baja_perisfericos' with values ['id']. Did you mean 'invequip.revertir_baja_perisferico' instead?
+2025-09-27 16:27:09,321 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:27:09,536 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:27:09,837 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-27 16:27:14,511 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/revertir_baja/5
+2025-09-27 16:27:14,665 - ERROR - Exception on /perisfericos/revertir_baja/5 [POST]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\invequip.py", line 2127, in revertir_baja_perisferico
+    cur.execute("DELETE FROM baja WHERE id_registro = %s AND tabla = 'perisfericos'", (id,))
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna «id_registro»
+LINE 1: DELETE FROM baja WHERE id_registro = 5 AND tabla = 'perisfer...
+                               ^
+HINT:  Probablemente quiera hacer referencia a la columna «baja.idregistro».
+
+2025-09-27 16:27:34,895 - INFO - Serving on http://0.0.0.0:5000
+2025-09-27 16:27:38,232 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/revertir_baja/5
+2025-09-27 16:27:38,393 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
+2025-09-27 16:27:38,603 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
