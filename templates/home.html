@@ -166,7 +166,7 @@
           </div>
         </a>
       </div>
-      <!-- NUEVA OPCIÓN ADMINISTRACIÓN DE USUARIOS -->
+      <!--  ADMINISTRACIÓN DE USUARIOS -->
 <div class="col-md-5 col-sm-10">
   <a href="{{ url_for('adminuser.admin_user') }}" class="text-decoration-none">
     <div class="card card-option shadow-lg">
@@ -176,7 +176,7 @@
     </div>
   </a>
 </div>
-      <!-- 🔒 NUEVA OPCIÓN REGISTRAR HUELLA -->
+      <!--  REGISTRAR HUELLA -->
   <div class="col-md-5 col-sm-10">
     <a href="{{ url_for('huella.registrar_huella') }}" class="text-decoration-none">
       <div class="card card-option shadow-lg">
@@ -186,6 +186,17 @@
       </div>
     </a>
   </div>
+  <!-- UBICACIÓN EDS -->
+<div class="col-md-5 col-sm-10">
+  <a href="{{ url_for('ubicacion.ubicacion_eds') }}" class="text-decoration-none">
+    <div class="card card-option shadow-lg">
+      <div class="card-body">
+        <h4 class="card-title">📍 Ubicación EDS</h4>
+      </div>
+    </div>
+  </a>
+</div>
+
     </div>
 
     <a href="{{ url_for('logout') }}" class="btn btn-futuristic mt-4">Cerrar sesión</a>

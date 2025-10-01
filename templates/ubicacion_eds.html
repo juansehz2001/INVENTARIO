@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Mapa EDS - Villavicencio</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- MarkerCluster -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <style>
+    :root{
+      --accent:#2c3e50;
+      --panel:#ffffff;
+    }
+    html,body{height:100%;margin:0;font-family:"Segoe UI",Arial,sans-serif;background:#f4f6f9}
+    .app {display:flex;height:100vh;flex-direction:column;}
+
+    /* header */
+    header {
+      background:var(--accent);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 14px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.12);
+    }
+    header h1{font-size:1rem;margin:0;display:flex;gap:8px;align-items:center}
+    .controls {display:flex;gap:8px;align-items:center}
+
+    /* 🔹 Botón Lista siempre visible */
+    .toggle-sidebar {
+      display:inline-block !important;
+      background:#fff;
+      border-radius:8px;
+      padding:6px 12px;
+      border:1px solid rgba(0,0,0,0.15);
+      cursor:pointer;
+      font-weight:600;
+      transition:all 0.25s ease;
+    }
+    .toggle-sidebar:hover {
+      background:#f7f9fc;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+    }
+    .sidebar.visible {
+  transform: translateX(0);
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* --- Ajustes responsive --- */
+@media (max-width:900px){
+  .main {
+    position:relative;
+  }
+  .sidebar {
+    position:absolute;
+    top:0;
+    left:0;
+    height:100%;
+    z-index:1000;
+    border-right:none;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+  }}
+
+    /* 🔹 Botón Salir elegante */
+    .btn-exit {
+      display:inline-block;
+      background:#e63946;
+      color:#fff !important;
+      border:none;
+      border-radius:8px;
+      padding:6px 14px;
+      font-weight:600;
+      text-decoration:none;
+      transition:background 0.25s ease, transform 0.15s ease;
+    }
+    .btn-exit:hover {background:#c92c3a;transform:scale(1.05);}
+    .btn-exit:active {transform:scale(0.95);}
+
+    /* 🔹 Botón Ubicarme */
+    .locate-btn {
+      background:#fff;border-radius:8px;padding:8px 10px;border:1px solid rgba(0,0,0,0.08);cursor:pointer;font-weight:700;
+    }
+
+    #status {color: #eaf2ff; font-size:0.85rem; padding:6px 8px;background: rgba(255,255,255,0.06);border-radius:6px}
+
+    /* layout: sidebar + map */
+    .main {display:flex;flex:1;min-height:0;}
+
+    /* sidebar */
+  .sidebar {
+  width:320px;
+  max-width:80%;
+  background:var(--panel);
+  border-right:1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  padding:10px;
+  overflow:auto;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+    .sidebar.hidden {
+  transform: translateX(-105%);
+  opacity:0;
+  pointer-events:none;
+}
+    .sidebar .title {font-weight:700;margin-bottom:8px}
+    .station-list {list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+    .station-item {display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer}
+    .station-item:hover {background: #f0f6ff}
+    .color-badge {width:14px;height:14px;border-radius:4px;flex:0 0 14px}
+
+    /* map */
+    #map {flex:1;min-height:0}
+
+    /* tooltip styling */
+    .marker-label-tooltip {
+      background: rgba(255,255,255,0.95) !important;
+      color:#222 !important;
+      padding:4px 8px !important;
+      border-radius:8px !important;
+      box-shadow:0 2px 6px rgba(0,0,0,0.12) !important;
+      font-weight:700 !important;
+      font-size:12px !important;
+      border: 1px solid rgba(0,0,0,0.06) !important;
+      white-space:nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>🗺️ Estaciones de Servicio — Villavicencio</h1>
+      <div class="controls">
+        <div id="status">Mapa listo</div>
+        <button id="toggle-sidebar" class="toggle-sidebar" title="Mostrar lista">☰ Lista</button>
+        <button id="locate-btn" class="locate-btn" title="Ubicarme ahora">📍 Ubicarme</button>
+        <a href="{{ url_for('home') }}" class="btn-exit">⏻ Salir</a>
+      </div>
+    </header>
+
+    <div class="main">
+      <aside class="sidebar" id="sidebar">
+        <div class="title">Listado EDS</div>
+        <ul class="station-list" id="station-list"></ul>
+        <div style="margin-top:12px;font-size:13px;color:#555">
+          <strong>Consejos:</strong>
+          <div style="margin-top:6px">Permite ubicación y usa HTTPS para mejor precisión.</div>
+        </div>
+      </aside>
+
+      <div id="map"></div>
+    </div>
+  </div>
+
+ <script id="ubicaciones-data" type="application/json">
+  {{ ubicaciones | tojson }}
+</script>
+
+<script>
+  // ---------- datos
+  const ubicaciones = JSON.parse(document.getElementById('ubicaciones-data').textContent || "[]");
+
+  // ---------- mapa
+  const map = L.map('map', { zoomControl:true }).setView([4.14, -73.61], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+
+  // ---------- iconos confiables
+  const ICON_BASE = 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-';
+  const SHADOW = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/images/marker-shadow.png';
+  const colores = ["red","blue","green","orange","purple","darkred","cadetblue","darkgreen","yellow"];
+  const iconCache = {};
+  function getColorIcon(color){
+    if(iconCache[color]) return iconCache[color];
+    const icon = L.icon({
+      iconUrl: `${ICON_BASE}${color}.png`,
+      shadowUrl: SHADOW,
+      iconSize: [25,41],
+      iconAnchor: [12,41],
+      popupAnchor: [1,-34],
+      shadowSize: [41,41]
+    });
+    iconCache[color] = icon;
+    return icon;
+  }
+
+  // ---------- cluster group
+  const clusterGroup = L.markerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
+  map.addLayer(clusterGroup);
+
+  // ---------- arrays para referencias
+  const markerRefs = [];
+  const stationListEl = document.getElementById('station-list');
+
+  // ---------- pintar marcadores y lista
+  ubicaciones.forEach((ubi, i) => {
+    const color = colores[i % colores.length];
+    const marker = L.marker([ubi.lat, ubi.lng], { icon: getColorIcon(color) });
+
+    marker.bindPopup(
+  `<div style="max-width:240px">
+    <h4 style="margin:0 0 6px 0;color:var(--accent)">${ubi.nombre}</h4>
+    <p style="margin:0 0 8px 0">${ubi.descripcion}</p>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=${ubi.lat},${ubi.lng}" 
+       target="_blank" 
+       style="display:inline-block;background:#2c3e50;color:#fff;
+              padding:6px 12px;border-radius:6px;font-size:0.9rem;
+              text-decoration:none;font-weight:600;transition:background 0.2s ease;">
+       🚗 Ir
+    </a>
+  </div>`
+);
+    marker.bindTooltip(ubi.nombre, {
+      permanent: true,
+      direction: 'top',
+      className: 'marker-label-tooltip',
+      offset:[0,-12]
+    });
+
+    clusterGroup.addLayer(marker);
+    markerRefs.push({ marker, ubicacion: ubi, color });
+
+    const li = document.createElement('li');
+    li.className = 'station-item';
+    li.innerHTML = `
+      <div class="color-badge" style="background:${color}"></div>
+      <div>
+        <strong>${ubi.nombre}</strong>
+        <div style="font-size:12px;color:#666">${ubi.descripcion}</div>
+      </div>`;
+    li.addEventListener('click', () => {
+      map.setView([ubi.lat, ubi.lng], 16, { animate:true });
+      setTimeout(()=> marker.openPopup(), 400);
+    });
+    stationListEl.appendChild(li);
+  });
+
+  // ---------- referencias UI
+  const statusEl = document.getElementById('status');
+  const locateBtn = document.getElementById('locate-btn');
+  const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+  const sidebar = document.getElementById('sidebar');
+
+  // ---------- Sidebar con estado persistente + animación
+  let sidebarOpen = localStorage.getItem("sidebarOpen") === "true";
+  if(sidebarOpen){
+    sidebar.classList.add("visible");
+    sidebar.classList.remove("hidden");
+  } else {
+    sidebar.classList.add("hidden");
+  }
+
+  toggleSidebarBtn.addEventListener('click', ()=> {
+    sidebarOpen = !sidebarOpen;
+    if(sidebarOpen){
+      sidebar.classList.add("visible");
+      sidebar.classList.remove("hidden");
+    } else {
+      sidebar.classList.add("hidden");
+      sidebar.classList.remove("visible");
+    }
+    localStorage.setItem("sidebarOpen", sidebarOpen);
+  });
+
+  // ---------- geolocalización robusta
+  let userMarker = null;
+  let userCircle = null;
+  let attempts = 0;
+  const maxAttempts = 6;
+  const desiredAccuracy = 30;
+  const geolocateOptions = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+
+  function clearUserLayers(){
+    if(userMarker && map.hasLayer(userMarker)) map.removeLayer(userMarker);
+    if(userCircle && map.hasLayer(userCircle)) map.removeLayer(userCircle);
+    userMarker = null; userCircle = null;
+  }
+
+  function updateUser(latlng, accuracy, firstFix=false){
+    if(userMarker){
+      userMarker.setLatLng(latlng).setPopupContent(`📍 Estás aquí (± ${Math.round(accuracy)} m)`);
+    } else {
+      userMarker = L.circleMarker(latlng, { radius:8, fillColor:'#3388ff', color:'#fff', weight:2, fillOpacity:0.95 }).addTo(map)
+                    .bindPopup(`📍 Estás aquí (± ${Math.round(accuracy)} m)`);
+    }
+    if(userCircle){
+      userCircle.setLatLng(latlng).setRadius(accuracy/2);
+    } else {
+      userCircle = L.circle(latlng, accuracy/2, { color:'#3388ff', fillColor:'#3388ff', fillOpacity:0.12 }).addTo(map);
+    }
+    if(firstFix) map.setView(latlng, 15, { animate:true });
+  }
+
+  function handleSuccess(pos, first=false){
+    attempts++;
+    const latlng = [pos.coords.latitude, pos.coords.longitude];
+    const accuracy = pos.coords.accuracy || 9999;
+    updateUser(latlng, accuracy, first);
+    statusEl.textContent = `Ubicación encontrada — precisión ≈ ${Math.round(accuracy)} m (int ${attempts}/${maxAttempts})`;
+    if(accuracy > desiredAccuracy && attempts < maxAttempts){
+      setTimeout(() => attemptLocate(false), 700);
+    } else {
+      if(accuracy <= desiredAccuracy) statusEl.textContent += ' — precisión OK';
+      else statusEl.textContent += ' — precisión limitada';
+      attempts = 0;
+    }
+  }
+
+  function handleError(err){
+    attempts++;
+    console.warn('Geolocation error', err);
+    statusEl.textContent = `Error ubicación: ${err.message} (int ${attempts}/${maxAttempts})`;
+    if(attempts < maxAttempts){
+      setTimeout(() => attemptLocate(false), 900);
+    } else {
+      attempts = 0;
+    }
+  }
+
+  function attemptLocate(resetAttempts=true){
+    if(!('geolocation' in navigator)){
+      statusEl.textContent = 'Geolocation no disponible en este navegador';
+      return;
+    }
+    if(resetAttempts) attempts = 0;
+    statusEl.textContent = `Localizando… intento ${attempts+1}/${maxAttempts}`;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => handleSuccess(pos, attempts===0),
+      (err) => handleError(err),
+      geolocateOptions
+    );
+  }
+
+  locateBtn.addEventListener('click', () => {
+    clearUserLayers();
+    attemptLocate(true);
+  });
+
+  window.addEventListener('load', () => {
+    attemptLocate(true);
+  });
+</script>
+
+</body>
+</html>

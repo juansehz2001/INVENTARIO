@@ -10,6 +10,7 @@ from adminuser import adminuser_bp
 from caracequipos import caracequipos_bp
 from inv import inv_bp
 from huella import huella_bp
+from ubicacion import ubicacion
 from invequip import invequip_bp
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import hashes
@@ -296,6 +297,7 @@ app.register_blueprint(huella_bp)
 app.register_blueprint(adminuser_bp)
 app.register_blueprint(invequip_bp)
 app.register_blueprint(caracequipos_bp)
+app.register_blueprint(ubicacion)
 
 
 

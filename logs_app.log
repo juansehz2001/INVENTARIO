@@ -8233,3 +8233,235 @@ HINT:  Probablemente quiera hacer referencia a la columna «baja.idregistro».
 2025-09-27 16:27:38,232 - INFO - Usuario: jefe | Rol: jefe  | POST /perisfericos/revertir_baja/5
 2025-09-27 16:27:38,393 - INFO - Usuario: jefe | Rol: jefe  | GET /inventario_equipos
 2025-09-27 16:27:38,603 - INFO - Usuario: jefe | Rol: jefe  | GET /api/equipos
+2025-09-30 19:44:46,209 - INFO - Serving on http://0.0.0.0:5000
+2025-09-30 19:44:51,773 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-30 19:45:01,687 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-30 19:45:09,437 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-30 19:45:20,450 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-30 19:45:29,719 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-30 19:45:29,937 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 19:52:20,796 - INFO - Serving on http://0.0.0.0:5000
+2025-09-30 19:52:21,020 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 19:52:21,156 - ERROR - Exception on /home [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\app.py", line 260, in home
+    return render_template("home.html",
+                           usuario=session["usuario"],
+                           rol=session["rol"],
+                           rol_id=session["rol_id"])
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\home.html", line 191, in top-level template code
+    <a href="{{ url_for('ubicacion.ubicacion_eds') }}" class="text-decoration-none">
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'ubicacion.ubicacion_eds'. Did you mean 'adminuser.admin_user' instead?
+2025-09-30 19:52:21,235 - INFO - Usuario: jefe | Rol: jefe  | GET /favicon.ico
+2025-09-30 19:55:23,917 - INFO - Serving on http://0.0.0.0:5000
+2025-09-30 19:55:24,811 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 19:55:24,825 - ERROR - Exception on /home [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\app.py", line 260, in home
+    return render_template("home.html",
+                           usuario=session["usuario"],
+                           rol=session["rol"],
+                           rol_id=session["rol_id"])
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\templates\home.html", line 191, in top-level template code
+    <a href="{{ url_for('ubicacion.ubicacion_eds') }}" class="text-decoration-none">
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'ubicacion.ubicacion_eds'. Did you mean 'adminuser.admin_user' instead?
+2025-09-30 19:57:59,948 - INFO - Serving on http://0.0.0.0:5000
+2025-09-30 19:58:01,922 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 19:58:02,004 - INFO - Usuario: jefe | Rol: jefe  | GET /static/favicon.svg
+2025-09-30 19:58:04,261 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 19:58:04,261 - ERROR - Exception on /ubicacion_eds [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\ubicacion.py", line 8, in ubicacion_eds
+    return render_template("ubicacion_eds.html")
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: ubicacion_eds.html
+2025-09-30 19:58:23,466 - INFO - Serving on http://0.0.0.0:5000
+2025-09-30 19:58:38,656 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 19:58:38,657 - ERROR - Exception on /ubicacion_eds [GET]
+Traceback (most recent call last):
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\ubicacion.py", line 8, in ubicacion_eds
+    return render_template("ubicacion_eds.html")
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\juans\OneDrive\Documents\PROYECTOS\INVENTARIO\venv\Lib\site-packages\flask\templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: ubicacion_eds.html
+2025-09-30 19:59:38,790 - INFO - Serving on http://0.0.0.0:5000
+2025-09-30 19:59:40,232 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 19:59:43,111 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 19:59:44,527 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 19:59:50,931 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:04:58,333 - INFO - Serving on http://0.0.0.0:5000
+2025-09-30 20:04:58,945 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:06:02,105 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 20:14:28,828 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:14:28,963 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 20:15:13,170 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:15:13,272 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 20:23:30,338 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:23:30,381 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 20:27:46,322 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:28:23,419 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:42:27,543 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:42:36,704 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:45:49,810 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:50:44,393 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:52:36,672 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:55:04,676 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 20:55:04,682 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-30 20:55:14,761 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-30 20:55:14,973 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 20:55:17,576 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:55:20,768 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:56:29,802 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:58:00,211 - INFO - Usuario: jefe | Rol: jefe  | GET /inventarioarticulo
+2025-09-30 20:58:03,344 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 20:58:18,690 - INFO - Usuario: jefe | Rol: jefe  | GET /inventarioarticulo
+2025-09-30 20:58:43,615 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:59:43,676 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:59:48,376 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:59:49,958 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 20:59:51,453 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:00:27,230 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 21:00:29,220 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:00:56,890 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 21:00:58,323 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:01:03,650 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:03:39,167 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:04:41,683 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:05:08,537 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:08:26,449 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:08:32,381 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:08:40,839 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:11:06,808 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:11:06,921 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:11:19,865 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 21:11:19,870 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-30 21:11:24,203 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:14:16,595 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:14:16,639 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:14:17,969 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:14:17,984 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:14:18,814 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /ubicacion_eds
+2025-09-30 21:14:18,911 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:14:28,238 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /home
+2025-09-30 21:14:28,244 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | GET /
+2025-09-30 21:14:33,186 - INFO - Usuario: ANÓNIMO | Rol: SIN ROL  | POST /
+2025-09-30 21:14:33,426 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 21:14:35,757 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:14:46,259 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:19:23,948 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
+2025-09-30 21:19:24,056 - INFO - Usuario: jefe | Rol: jefe  | GET /.well-known/appspecific/com.chrome.devtools.json
+2025-09-30 21:20:02,736 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 21:24:14,053 - INFO - Usuario: jefe | Rol: jefe  | GET /home
+2025-09-30 21:24:14,128 - INFO - Usuario: jefe | Rol: jefe  | GET /static/favicon.svg
+2025-09-30 21:24:15,093 - INFO - Usuario: jefe | Rol: jefe  | GET /ubicacion_eds
